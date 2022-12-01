@@ -53,5 +53,5 @@ private:
 	std::vector<Cylinder>	cylinders;
 
 	UINT	sphereVertexCount = 0;
-	UINT	sphereCylinderCount = 0;
+	UINT	cylinderVertexCount = 0;
 };

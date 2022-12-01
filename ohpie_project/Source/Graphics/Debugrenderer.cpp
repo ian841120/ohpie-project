@@ -103,6 +103,10 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 }
 void DebugRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int slice, int stack)
 {
+	cylinderVertexCount = 2 * slice * (stack + 1) + 2 * slice;
+	std::unique_ptr<DirectX::XMFLOAT3[]>vertices = std::make_unique<DirectX::XMFLOAT3[]>(cylinderVertexCount);
+	DirectX::XMFLOAT3* p = vertices.get();
+
 
 }
 void DebugRenderer::DrawCylinder(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
@@ -113,4 +117,12 @@ void DebugRenderer::DrawCylinder(const DirectX::XMFLOAT3& position, float radius
 	cylinder.height = height;
 	cylinder.color = color;
 	cylinders.emplace_back(cylinder);
+}
+void DebugRenderer::DrawSphere(const DirectX::XMFLOAT3& center, float radius, const DirectX::XMFLOAT4& color)
+{
+	Sphere sphere;
+	sphere.center = center;
+	sphere.radius = radius;
+	sphere.color = color;
+	spheres.emplace_back(sphere);
 }
