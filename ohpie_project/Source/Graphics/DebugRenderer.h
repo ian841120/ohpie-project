@@ -17,7 +17,7 @@ public:
 	void DrawCylinder(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 private:
 	void CreateSphereMesh(ID3D11Device* device, float radius, int slices, int stacks);
-	void CreateCylinderMesh(ID3D11Device device, float radius1, float radius, float start, float height, int slices, int stacks);
+	void CreateCylinderMesh(ID3D11Device* device, float radius1, float radius, float start, float height, int slices, int stacks);
 private:
 	struct CbMesh
 	{
