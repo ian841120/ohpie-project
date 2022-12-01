@@ -401,3 +401,4 @@ FodyWeavers.xsd
 # compile shader
 *.cso
 *.cod
+Shader/
