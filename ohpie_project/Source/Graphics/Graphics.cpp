@@ -77,5 +77,5 @@ Graphics::Graphics(HWND hwnd)
 
 
 	imguiClass = std::make_unique<ImGuiClass>(hwnd, device.Get(),device_context.Get());
-
+	debugRenderer = std::make_unique<DebugRenderer>(device.Get());
 }

@@ -10,7 +10,7 @@ public:
 	~DebugRenderer() {};
 public:
 	//Render
-	void Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4 projection);
+	void Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);
 	//Draw sphere
 	void DrawSphere(const DirectX::XMFLOAT3& center, float radius, const DirectX::XMFLOAT4& color);
 	//Draw cylinder
@@ -21,7 +21,7 @@ private:
 private:
 	struct CbMesh
 	{
-		DirectX::XMFLOAT4X4	view_project;
+		DirectX::XMFLOAT4X4	world_view_project;
 		DirectX::XMFLOAT4	color;
 	};
 	struct Sphere
@@ -37,9 +37,9 @@ private:
 		float				radius;
 		float				height;
 	};
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	sphereVertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	cylinderVertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	constantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	sphere_vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	cylinder_vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	constant_buffer;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>	vertex_shader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	pixel_shader;

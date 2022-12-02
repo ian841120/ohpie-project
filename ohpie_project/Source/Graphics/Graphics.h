@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <memory>
 #include "ImguiClass.h"
+#include "DebugRenderer.h"
 class Graphics
 {
 public:
@@ -18,7 +19,7 @@ public:
 	float GetScreenHeight()const { return screenHeight; }
 
 	ImGuiClass* GetImGuiClass() const { return imguiClass.get(); }
-
+	DebugRenderer* GetDebugRenderer() const { return debugRenderer.get(); }
 private:
 	static Graphics*								instance;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -29,6 +30,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>			depth_stencil_buffer;
 
 	std::unique_ptr<ImGuiClass>						imguiClass;
+	std::unique_ptr<DebugRenderer>					debugRenderer;
 
 	float screenWidth;
 	float screenHeight;

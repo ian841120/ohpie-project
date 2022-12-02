@@ -422,6 +422,7 @@ void Sprite::render(ID3D11DeviceContext* device_context,float dx,float dy,float 
 	device_context->PSSetSamplers(0, 1, sampler_states[static_cast<int>(ss)].GetAddressOf());
 	device_context->OMSetDepthStencilState(depth_stencil_states[static_cast<int>(dss)].Get(), 1);
 	device_context->OMSetBlendState(blender_states[static_cast<int>(bs)].Get(), nullptr,0xFFFFFFFF);
+	device_context->RSSetState(rasterizer_state.Get());
 	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
 	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
 	device_context->Draw(4, 0);

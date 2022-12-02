@@ -45,12 +45,21 @@
     <None Include="HLSL\Sprite.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\DebugRenderer.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\SpritePS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\SpriteVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\DebugRendererVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\DebugRendererPS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
@@ -141,9 +150,6 @@
     <ClCompile Include="External\DirectXTex\WICTextureLoader.cpp">
       <Filter>External\DirectXTex</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Debugrenderer.cpp">
-      <Filter>ソース ファイル\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Graphics.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
@@ -179,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="Source\SceneGame.cpp">
       <Filter>ソース ファイル\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\DebugRenderer.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

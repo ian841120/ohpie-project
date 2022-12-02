@@ -12,7 +12,7 @@ public:
 		static Camera camera;
 		return camera;
 	}
-	void setLookAt(const DirectX::XMFLOAT3& eye, const DirectX::XMFLOAT3& focus, const DirectX::XMFLOAT3& up);
+	void SetLookAt(const DirectX::XMFLOAT3& eye, const DirectX::XMFLOAT3& focus, const DirectX::XMFLOAT3& up);
 	void SetPerspectiveFov(float fovY, float aspect, float nearZ, float farZ);
 	const DirectX::XMFLOAT3& GetEye()const { return eye; }
 	const DirectX::XMFLOAT3& GetFocus()const { return focus; }

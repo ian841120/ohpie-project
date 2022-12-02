@@ -1,5 +1,5 @@
 #include "Camera.h"
-void Camera::setLookAt(const DirectX::XMFLOAT3& eye,const DirectX::XMFLOAT3& focus,const DirectX::XMFLOAT3& up)
+void Camera::SetLookAt(const DirectX::XMFLOAT3& eye,const DirectX::XMFLOAT3& focus,const DirectX::XMFLOAT3& up)
 {
 	//Create view by using eye focus up
 	DirectX::XMVECTOR Eye = DirectX::XMLoadFloat3(&eye);
