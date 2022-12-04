@@ -12,6 +12,6 @@ public:
 	void Render();
 private:
 	std::unique_ptr<Sprite> sprite[2];
-	float x = 0;
-	float y = 0;
+	float r = 5;
+	float h = 5;
 };

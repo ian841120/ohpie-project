@@ -99,7 +99,9 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create rasterizer state failed");
 
 	}
+	CreateSphereMesh(device, 1, 16, 16);
 	CreateCylinderMesh(device,1.0f, 1.0f, 0.0f, 1.0f, 16, 1);
+	CreateCapsuleMesh(device, 1, 1, 16, 16);
 }
 void DebugRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection)
 {
@@ -138,57 +140,90 @@ void DebugRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::X
 		device_context->Draw(cylinderVertexCount, 0);
 	}
 	cylinders.clear();
-	
+	//Draw sphere
+	device_context->IASetVertexBuffers(0, 1, sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
+	for (const Sphere& sphere : spheres)
+	{
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(sphere.radius, sphere.radius, sphere.radius);
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(sphere.center.x, sphere.center.y, sphere.center.z);
+		DirectX::XMMATRIX W = S * T;
+		DirectX::XMMATRIX WVP = W * VP;
+		CbMesh cbmesh;
+		cbmesh.color = sphere.color;
+		DirectX::XMStoreFloat4x4(&cbmesh.world_view_project, WVP);
+		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
+		device_context->Draw(sphereVertexCount, 0);
+	}
+	spheres.clear();
+	//Draw capsule
+	device_context->IASetVertexBuffers(0, 1, capsule_vertex_buffer.GetAddressOf(), &stride, &offset);
 
+	for (const Capsule& capsule : capsules)
+	{
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(capsule.radius, capsule.radius, capsule.radius);
+		//DirectX::XMMATRIX S1 = DirectX::XMMatrixScaling(1, capsule.height, 1);
+
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(capsule.position.x, capsule.position.y+ capsule.height, capsule.position.z);
+		DirectX::XMMATRIX W = S* T;
+		DirectX::XMMATRIX WVP = W * VP;
+		CbMesh cbmesh;
+		cbmesh.color = capsule.color;
+		DirectX::XMStoreFloat4x4(&cbmesh.world_view_project, WVP);
+		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
+		device_context->Draw(capsuleVertexCount, 0);
+	}
+	capsules.clear();
 }
-void DebugRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int slice, int stack)
+void DebugRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int slices, int stacks)
 {
-	cylinderVertexCount = 2 * slice * (stack + 1) + 2 * slice;
+	cylinderVertexCount = 2 * slices * (stacks + 1) + 2 * slices;
 	std::unique_ptr<DirectX::XMFLOAT3[]>vertices = std::make_unique<DirectX::XMFLOAT3[]>(cylinderVertexCount);
 	DirectX::XMFLOAT3* p = vertices.get();
 	// Each height of  stack
-	float stackHeight = height / stack;
+	float stackHeight = height / stacks;
 
 	// The difference between near two radius
-	float radiusStep = (radius2 - radius1) / stack;
+	float radiusStep = (radius2 - radius1) / stacks;
 	// Each radius
-	float theta = DirectX::XM_2PI / slice;
-	for (int i = 0; i < slice; i++)
+	float thetaStep = DirectX::XM_2PI / slices;
+	for (int i = 0; i < slices; i++)
 	{
-		
+		float theta = i * thetaStep;
 		//first point angle 
-		float sin1 = sinf(i * theta);
-		float cos1 = cosf(i * theta);
+		//float sin1 = sinf(i * theta);
+		//float cos1 = cosf(i * theta);
 
 		//Next point angle
-		int n = (i + 1) % slice;
-		float sin2 = sinf(n * theta);
-		float cos2 = cosf(n * theta);
+		//int n = (i + 1) % slices;
+		//float sin2 = sinf(n * theta);
+		//float cos2 = cosf(n * theta);
 
-		for (int j = 0; j <= stack; j++)
+		for (int j = 0; j <= stacks; j++)
 		{
 			// y coordination
 			float y = start + j * stackHeight;
 			// each circle radius
 			float r = radius1 + j * radiusStep;
 			// first point
-			p->x = cos1 * r;
+			p->x = r * cosf(theta);
 			p->y = y;
-			p->z = sin1 * r;
+			p->z = r * sinf(theta);
 			p++;
+			theta += thetaStep;
 			// next point
-			p->x = cos2 * r;
+			p->x = r * cosf(theta);
 			p->y = y;
-			p->z = sin2 * r;
+			p->z = r * sinf(theta);
+
 			p++;
 		}
-		p->x = cos1 * radius1;
+		p->x = radius1* cosf(theta);
 		p->y = start;
-		p->z = sin1 * radius1;
+		p->z = radius1* sinf(theta);
 		p++;
-		p->x = cos1 * radius2;
+		p->x = radius2* cosf(theta);
 		p->y = start + height;
-		p->z = sin1 * radius2;
+		p->z = radius2 * sinf(theta);
 		p++;
 	}
 	//Create Vertex buffer
@@ -208,9 +243,147 @@ void DebugRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, floa
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create cylinder vertex buffer failed");
 	}
 }
-void DebugRenderer::CreateSphereMesh(ID3D11Device* device, float radius, int slice, int stack)
+void DebugRenderer::CreateSphereMesh(ID3D11Device* device, float radius, int slices, int stacks)
 {
-	sphereVertexCount=
+	sphereVertexCount = 2 * slices * (stacks-1) + 2 * stacks * slices;
+	std::unique_ptr<DirectX::XMFLOAT3[]>vertices = std::make_unique<DirectX::XMFLOAT3[]>(sphereVertexCount);
+	DirectX::XMFLOAT3* p = vertices.get();
+	//Draw Latitude
+	float thetaStep = DirectX::XM_2PI / slices;
+	float phiStep = DirectX::XM_PI / stacks;
+	for (int i = 1; i < stacks; i++)
+	{
+		
+		float phi = i * phiStep;
+		float y = radius * cosf(phi);
+		float r = radius * sinf(phi);
+		for (int j = 0; j < slices; j++)
+		{
+			float theta = j * thetaStep;
+			p->x = r * cosf(theta);
+			p->y = y;
+			p->z = r * sinf(theta);
+			p++;
+			theta += thetaStep;
+			p->x = r * cosf(theta);
+			p->y = y;
+			p->z = r * sinf(theta);
+			p++;
+		}
+	}
+	//Draw Longitude
+	phiStep = DirectX::XM_2PI / stacks;
+	for (int i = 0; i < slices; i++)
+	{
+		float theta = i * thetaStep;
+		for (int j =0; j < stacks; j++)
+		{
+			float phi = j * phiStep;
+			p->x = radius * cosf(phi) * sinf(theta);
+			p->y = radius * sinf(phi);
+			p->z = radius * cosf(phi) * cosf(theta);
+			p++;
+			phi += phiStep;
+			p->x = radius * cosf(phi) * sinf(theta);
+			p->y = radius * sinf(phi);
+			p->z = radius * cosf(phi) * cosf(theta);
+			p++;
+
+		}
+	}
+	//Create vertex buffer
+	{
+		D3D11_BUFFER_DESC buffer_desc{};
+		buffer_desc.ByteWidth = sizeof(DirectX::XMFLOAT3) * sphereVertexCount;
+		buffer_desc.Usage = D3D11_USAGE_IMMUTABLE;
+		buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		buffer_desc.CPUAccessFlags = 0;
+		buffer_desc.MiscFlags = 0;
+		buffer_desc.StructureByteStride = 0;
+		D3D11_SUBRESOURCE_DATA subresource_data{};
+		subresource_data.pSysMem = vertices.get();
+		subresource_data.SysMemPitch = 0;
+		subresource_data.SysMemSlicePitch = 0;
+		HRESULT hr = device->CreateBuffer(&buffer_desc, &subresource_data, sphere_vertex_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Create sphere vertex buffer failed");
+
+	}
+
+}
+void DebugRenderer::CreateCapsuleMesh(ID3D11Device* device, float radius, float height, int slices, int stacks)
+{
+	capsuleVertexCount = 2 * slices * stacks + 2 * stacks * slices + 2 * slices * 2;
+	std::unique_ptr<DirectX::XMFLOAT3[]>vertices = std::make_unique<DirectX::XMFLOAT3[]>(capsuleVertexCount);
+	DirectX::XMFLOAT3* p = vertices.get();
+	
+	float thetaStep = DirectX::XM_2PI / slices;
+	float phiStep = DirectX::XM_PI / stacks;
+	for (int i =1; i <= stacks; i++)
+	{
+		
+		float phi = i * phiStep;
+		if (i >= 9)
+		{
+			phi -= phiStep;
+		}
+		float y = radius * cosf(phi);
+		if (i <= stacks/2)
+		{
+			y += height;
+		}
+		float r = radius * sinf(phi);
+		for (int j = 0; j < slices; j++)
+		{
+			float theta = j * thetaStep;
+			p->x = r * cosf(theta);
+			p->y = y;
+			p->z = r * sinf(theta);
+			p++;
+			theta += thetaStep;
+			p->x = r * cosf(theta);
+			p->y = y;
+			p->z = r * sinf(theta);
+			p++;
+		}
+	}
+	
+	//phiStep = DirectX::XM_2PI / stacks;
+	//for (int i = 0; i < slices; i++)
+	//{
+	//	float theta = i * thetaStep;
+	//	for (int j = 0; j < stacks; j++)
+	//	{
+	//		float phi = j * phiStep;
+	//		p->x = radius * cosf(phi) * sinf(theta);
+	//		p->y = radius * sinf(phi);
+	//		p->z = radius * cosf(phi) * cosf(theta);
+	//		p++;
+	//		phi += phiStep;
+	//		p->x = radius * cosf(phi) * sinf(theta);
+	//		p->y = radius * sinf(phi);
+	//		p->z = radius * cosf(phi) * cosf(theta);
+	//		p++;
+	//
+	//	}
+	//}
+	//Create vertex buffer
+	{
+		D3D11_BUFFER_DESC buffer_desc{};
+		buffer_desc.ByteWidth = sizeof(DirectX::XMFLOAT3) * capsuleVertexCount;
+		buffer_desc.Usage = D3D11_USAGE_IMMUTABLE;
+		buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		buffer_desc.CPUAccessFlags = 0;
+		buffer_desc.MiscFlags = 0;
+		buffer_desc.StructureByteStride = 0;
+		D3D11_SUBRESOURCE_DATA subresource_data{};
+		subresource_data.pSysMem = vertices.get();
+		subresource_data.SysMemPitch = 0;
+		subresource_data.SysMemSlicePitch = 0;
+		HRESULT hr = device->CreateBuffer(&buffer_desc, &subresource_data, capsule_vertex_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Create sphere vertex buffer failed");
+
+	}
+
 }
 void DebugRenderer::DrawCylinder(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
 {
@@ -228,4 +401,13 @@ void DebugRenderer::DrawSphere(const DirectX::XMFLOAT3& center, float radius, co
 	sphere.radius = radius;
 	sphere.color = color;
 	spheres.emplace_back(sphere);
+}
+void DebugRenderer::DrawCapsule(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
+{
+	Capsule capsule;
+	capsule.position = position;
+	capsule.radius = radius;
+	capsule.height = height;
+	capsule.color = color;
+	capsules.emplace_back(capsule);
 }

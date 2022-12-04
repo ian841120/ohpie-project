@@ -29,8 +29,8 @@ void SceneGame::Update(float elapsed_time)
 	//ImGui Update
 	{
 		ImGui::Begin("ImGUI");
-		ImGui::SliderFloat("TESTX", &x, 0, 10);
-		ImGui::SliderFloat("TESTY", &y, 0, 10);
+		ImGui::SliderFloat("RADIUS", &r, 5, 30);
+		ImGui::SliderFloat("HEIGHT", &h, 5, 30);
 		ImGui::End();
 
 	}
@@ -49,7 +49,9 @@ void SceneGame::Render()
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	Camera& camera = Camera::Instance();
 
-	graphics.GetDebugRenderer()->DrawCylinder({ 0,0,0 }, 10, 10, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawSphere({ 30,0,0 }, r, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, r, h, { 1,1,1,1 });
 	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 	//sprite[0]->SetBlenderState(Sprite::BLENDER_STATE::NONE);
 	//sprite[0]->SetSamplerState(Sprite::SAMPLER_STATE::LINEAR_SAMPLER_STATE);

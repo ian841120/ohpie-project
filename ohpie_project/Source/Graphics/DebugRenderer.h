@@ -15,9 +15,12 @@ public:
 	void DrawSphere(const DirectX::XMFLOAT3& center, float radius, const DirectX::XMFLOAT4& color);
 	//Draw cylinder
 	void DrawCylinder(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
+	//Draw capsule
+	void DrawCapsule(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 private:
 	void CreateSphereMesh(ID3D11Device* device, float radius, int slices, int stacks);
-	void CreateCylinderMesh(ID3D11Device* device, float radius1, float radius, float start, float height, int slices, int stacks);
+	void CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int slices, int stacks);
+	void CreateCapsuleMesh(ID3D11Device* device, float radius, float height, int slices, int stacks);
 private:
 	struct CbMesh
 	{
@@ -37,8 +40,16 @@ private:
 		float				radius;
 		float				height;
 	};
+	struct Capsule
+	{
+		DirectX::XMFLOAT4	color;
+		DirectX::XMFLOAT3	position;
+		float				radius;
+		float				height;
+	};
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	sphere_vertex_buffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cylinder_vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	capsule_vertex_buffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	constant_buffer;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>	vertex_shader;
@@ -51,7 +62,9 @@ private:
 
 	std::vector<Sphere>		spheres;
 	std::vector<Cylinder>	cylinders;
+	std::vector<Capsule>	capsules;
 
 	UINT	sphereVertexCount = 0;
 	UINT	cylinderVertexCount = 0;
+	UINT	capsuleVertexCount = 0;
 };
