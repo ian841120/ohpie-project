@@ -21,6 +21,7 @@ private:
 	void CreateSphereMesh(ID3D11Device* device, float radius, int slices, int stacks);
 	void CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int slices, int stacks);
 	void CreateCapsuleMesh(ID3D11Device* device, float radius, float height, int slices, int stacks);
+	void CreateHalfSphereMesh(ID3D11Device* device, float radius, int slices, int stacks);
 private:
 	struct CbMesh
 	{
@@ -47,9 +48,10 @@ private:
 		float				radius;
 		float				height;
 	};
+private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	sphere_vertex_buffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	cylinder_vertex_buffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	capsule_vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	half_sphere_vertex_buffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	constant_buffer;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>	vertex_shader;
@@ -66,5 +68,5 @@ private:
 
 	UINT	sphereVertexCount = 0;
 	UINT	cylinderVertexCount = 0;
-	UINT	capsuleVertexCount = 0;
+	UINT	halfSphereVertexCount = 0;
 };

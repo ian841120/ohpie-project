@@ -7,18 +7,7 @@ void SceneGame::Initialize()
 {
 	//sprite[0] = std::make_unique<Sprite>(L"./Data/Image/cyberpunk.jpg");
 	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-	Camera& camera = Camera::Instance();
-	camera.SetLookAt(
-		DirectX::XMFLOAT3(0, 75, 75),
-		DirectX::XMFLOAT3(0, 0, 0),
-		DirectX::XMFLOAT3(0, 1, 0)
-	);
-	camera.SetPerspectiveFov(
-		DirectX::XMConvertToRadians(45),
-		1280.0f / 720.0f,
-		1.0f,
-		10000.0f
-	);
+
 }
 void SceneGame::Update(float elapsed_time)
 {
@@ -48,8 +37,12 @@ void SceneGame::Render()
 	Camera& camera = Camera::Instance();
 
 	graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawSphere({ 30,0,0 }, r, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
+	
 	graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, r, h, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, r, h, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, r, h, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, r, h, { 1,1,1,1 });
 	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 	//sprite[0]->SetBlenderState(Sprite::BLENDER_STATE::NONE);
 	//sprite[0]->SetSamplerState(Sprite::SAMPLER_STATE::LINEAR_SAMPLER_STATE);

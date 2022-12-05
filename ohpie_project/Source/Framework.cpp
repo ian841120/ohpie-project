@@ -89,7 +89,9 @@ LRESULT CALLBACK Framework::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LP
 		// Here we reset everything based on the new window dimensions.
 		timer.Start();
 		break;
-
+	case WM_MOUSEWHEEL:
+		InputClass::Instance().GetMouse().SetWheel(GET_WHEEL_DELTA_WPARAM(wParam));
+		break;
 	default:
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}

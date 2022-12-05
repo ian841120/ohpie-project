@@ -23,6 +23,10 @@ void MouseClass::Update()
 		preState[i] = state[i];
 
 	}
+
+	wheel[1] = wheel[0];
+	wheel[0] = 0;
+
 	//Get cursor position
 	POINT cursor;
 	GetCursorPos(&cursor);

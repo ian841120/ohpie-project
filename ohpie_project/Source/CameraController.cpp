@@ -1,8 +1,8 @@
 #include "CameraController.h"
 #include "Camera.h"
 #include "Input\InputClass.h"
-#define MOVESPEED 0.2
-#define ROTATESPEED 0.1
+#define MOVESPEED 0.2f
+#define ROTATESPEED 0.1f
 CameraController::CameraController()
 {
 	Camera& camera = Camera::Instance();
@@ -12,7 +12,7 @@ CameraController::CameraController()
 		camera_up
 	);
 	camera.SetPerspectiveFov(
-		DirectX::XMConvertToRadians(45),
+		DirectX::XMConvertToRadians(25.0f),
 		1280.0f / 720.0f,
 		1.0f,
 		10000.0f
@@ -82,5 +82,11 @@ void CameraController::Update(float elapsedTime)
 	DirectX::XMVECTOR Eye = DirectX::XMVectorSubtract(Focus, Front);
 	DirectX::XMStoreFloat3(&camera_eye, Eye);
 	camera.SetLookAt(camera_eye, camera_focus, camera_up);
-	
+
+	// Zoom
+	if (mouse.GetWheel() != 0)
+	{
+		distance -= static_cast<float>(mouse.GetWheel()) * distance * 0.001f;
+	}
+
 }

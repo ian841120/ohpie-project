@@ -127,6 +127,9 @@
     <ClInclude Include="Source\SceneGame.h">
       <Filter>ソース ファイル\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\GeometricPrimitive.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -187,6 +190,9 @@
       <Filter>ソース ファイル\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\DebugRenderer.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\GeometricPrimitive.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

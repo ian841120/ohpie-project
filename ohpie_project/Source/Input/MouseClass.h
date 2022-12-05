@@ -21,10 +21,12 @@ public:
 	int GetButtonDown(MOUSEKEY key) { return down[static_cast<int>(key)]; }
 	int GetButtonUp(MOUSEKEY key) { return release[static_cast<int>(key)]; }
 	int GetButtonState(MOUSEKEY key) { return state[static_cast<int>(key)]; }
-	
+	int GetWheel()const { return wheel[1]; }
+	void SetWheel(int wheel) { this->wheel[0] += wheel; }
 private:
 	HWND	hwnd;
 	DirectX::XMFLOAT2 cursorPosition[2] = {};
+	int wheel[2] = {};
 	int preState[3] = {};
 	int state[3] = {};
 	int down[3] = {};
