@@ -11,8 +11,9 @@ Framework::Framework(HWND hwnd) :hwnd(hwnd),graphics(hwnd),inputClass(hwnd)
 void Framework::Update(float elapsed_time)
 {
 	graphics.GetImGuiClass()->NewFrame();
-	inputClass.update();
+	inputClass.Update();
 	sceneGame.Update(elapsed_time);
+	cameraController.Update(elapsed_time);
 }
 void Framework::Render(float elapsed_time)
 {

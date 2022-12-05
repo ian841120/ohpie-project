@@ -5,8 +5,8 @@ InputClass::InputClass(HWND hwnd):mouseClass(hwnd)
 	instance = this;
 	
 }
-void InputClass::update()
+void InputClass::Update()
 {
-	keyBoardClass.update();
-	mouseClass.update();
+	keyBoardClass.Update();
+	mouseClass.Update();
 }

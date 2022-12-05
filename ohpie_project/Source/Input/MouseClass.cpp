@@ -5,7 +5,7 @@ static const int KeyMap[] =
 	VK_RBUTTON,
 	VK_MBUTTON,
 };
-void MouseClass::update()
+void MouseClass::Update()
 {
 	ZeroMemory(state, sizeof(state));
 	
@@ -27,6 +27,6 @@ void MouseClass::update()
 	POINT cursor;
 	GetCursorPos(&cursor);
 	ScreenToClient(hwnd, &cursor);
-
-	cursorPosition = { static_cast<float>(cursor.x), static_cast<float>(cursor.y) };
+	cursorPosition[0] = cursorPosition[1];
+	cursorPosition[1] = { static_cast<float>(cursor.x), static_cast<float>(cursor.y) };
 }

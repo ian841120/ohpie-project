@@ -11,7 +11,7 @@ public:
 	static InputClass& Instance()	{ return *instance; }
 	KeyBoardClass& GetKeyBoard()	{ return keyBoardClass; }
 	MouseClass& GetMouse()			{ return mouseClass; }
-	void update();
+	void Update();
 private:
 	static InputClass*	instance;
 	KeyBoardClass		keyBoardClass;

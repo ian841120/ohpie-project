@@ -1,6 +1,6 @@
 #include "KeyboardClass.h"
 #include <windows.h>
-void KeyBoardClass::update()
+void KeyBoardClass::Update()
 {
 	//Update
 

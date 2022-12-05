@@ -7,7 +7,6 @@ void SceneGame::Initialize()
 {
 	//sprite[0] = std::make_unique<Sprite>(L"./Data/Image/cyberpunk.jpg");
 	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-	Graphics& graphics = Graphics::GetInstance();
 	Camera& camera = Camera::Instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 75, 75),
@@ -20,7 +19,6 @@ void SceneGame::Initialize()
 		1.0f,
 		10000.0f
 	);
-	
 }
 void SceneGame::Update(float elapsed_time)
 {

@@ -4,6 +4,7 @@
 #include "Graphics/Graphics.h"
 #include "Input\InputClass.h"
 #include "CpuTimer.h"
+#include "CameraController.h"
 class Framework
 {
 public:
@@ -17,8 +18,9 @@ public:
 	int Run();
 	LRESULT CALLBACK HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 private:
-	Graphics	graphics;
-	InputClass	inputClass;
-	HWND		hwnd;
-	CpuTimer	timer;
+	Graphics			graphics;
+	InputClass			inputClass;
+	HWND				hwnd;
+	CpuTimer			timer;
+	CameraController	cameraController;
 };

@@ -189,7 +189,7 @@ public:
 public:
 	KeyBoardClass() {};
 	~KeyBoardClass() {};
-	void update();
+	void Update();
 	unsigned int GetButtonDown(KBKEY key)		{ return down[static_cast<unsigned int>(key)]; }
 	unsigned int GetButtonUp(KBKEY key)		{ return release[static_cast<unsigned int>(key)];}
 	unsigned int GetButtonState(KBKEY key)	{ return state[static_cast<unsigned int>(key)]; }
