@@ -98,12 +98,11 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create rasterizer state failed");
 
 	}
-	CreatePrimitiveCuboid(device);
+	CreatePrimitiveCuboid(device, 1.0f, 1.0f, 1.0f);
 
 }
 void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection, const DirectX::XMFLOAT4& lightDirection)
 {
-	// Set view port
 	// Set shader
 	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
 	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
@@ -147,8 +146,9 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 	}
 	cuboids.clear();
 }
-void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
+void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device, float length, float width, float height)
 {
+	DirectX::XMFLOAT3 position{ length / 2,height / 2,width / 2 };
 	Vertex vertices[24]{};
 	uint32_t indices[36]{};
 	cuboidIndexCount = sizeof(indices) / sizeof(uint32_t);
@@ -160,10 +160,10 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 	// |		|
 	// 2--------3
 	int face = 0;
-	vertices[face * 4 + 0].position = {-0.5f,+0.5f,-0.5f};
-	vertices[face * 4 + 1].position = {+0.5f,+0.5f,-0.5f};
-	vertices[face * 4 + 2].position = {-0.5f,-0.5f,-0.5f};
-	vertices[face * 4 + 3].position = {+0.5f,-0.5f,-0.5f};
+	vertices[face * 4 + 0].position = {-position.x,+position.y,-position.z};
+	vertices[face * 4 + 1].position = {+position.x,+position.y,-position.z};
+	vertices[face * 4 + 2].position = {-position.x,-position.y,-position.z};
+	vertices[face * 4 + 3].position = {+position.x,-position.y,-position.z};
 	vertices[face * 4 + 0].normal = { +0.0f,+0.0f,-1.0f };
 	vertices[face * 4 + 1].normal = { +0.0f,+0.0f,-1.0f };
 	vertices[face * 4 + 2].normal = { +0.0f,+0.0f,-1.0f };
@@ -182,10 +182,10 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 	// |		|
 	// 2--------3
 	face++;
-	vertices[face * 4 + 0].position = { -0.5f,+0.5f,+0.5f };
-	vertices[face * 4 + 1].position = { +0.5f,+0.5f,+0.5f };
-	vertices[face * 4 + 2].position = { -0.5f,+0.5f,-0.5f };
-	vertices[face * 4 + 3].position = { +0.5f,+0.5f,-0.5f };
+	vertices[face * 4 + 0].position = { -position.x,+position.y,+position.z };
+	vertices[face * 4 + 1].position = { +position.x,+position.y,+position.z };
+	vertices[face * 4 + 2].position = { -position.x,+position.y,-position.z };
+	vertices[face * 4 + 3].position = { +position.x,+position.y,-position.z };
 	vertices[face * 4 + 0].normal = { +0.0f,+1.0f,+0.0f };
 	vertices[face * 4 + 1].normal = { +0.0f,+1.0f,+0.0f };
 	vertices[face * 4 + 2].normal = { +0.0f,+1.0f,+0.0f };
@@ -204,10 +204,10 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 	// |		|
 	// 2--------3
 	face++;
-	vertices[face * 4 + 0].position = { +0.5f,+0.5f,-0.5f };
-	vertices[face * 4 + 1].position = { +0.5f,+0.5f,+0.5f };
-	vertices[face * 4 + 2].position = { +0.5f,-0.5f,-0.5f };
-	vertices[face * 4 + 3].position = { +0.5f,-0.5f,+0.5f };
+	vertices[face * 4 + 0].position = { +position.x,+position.y,-position.z };
+	vertices[face * 4 + 1].position = { +position.x,+position.y,+position.z };
+	vertices[face * 4 + 2].position = { +position.x,-position.y,-position.z };
+	vertices[face * 4 + 3].position = { +position.x,-position.y,+position.z };
 	vertices[face * 4 + 0].normal = { +1.0f,+0.0f,+0.0f };
 	vertices[face * 4 + 1].normal = { +1.0f,+0.0f,+0.0f };
 	vertices[face * 4 + 2].normal = { +1.0f,+0.0f,+0.0f };
@@ -226,10 +226,10 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 	// |		|
 	// 2--------3
 	face++;
-	vertices[face * 4 + 0].position = { -0.5f,+0.5f,+0.5f };
-	vertices[face * 4 + 1].position = { +0.5f,+0.5f,+0.5f };
-	vertices[face * 4 + 2].position = { -0.5f,-0.5f,+0.5f };
-	vertices[face * 4 + 3].position = { +0.5f,-0.5f,+0.5f };
+	vertices[face * 4 + 0].position = { -position.x,+position.y,+position.z };
+	vertices[face * 4 + 1].position = { +position.x,+position.y,+position.z };
+	vertices[face * 4 + 2].position = { -position.x,-position.y,+position.z };
+	vertices[face * 4 + 3].position = { +position.x,-position.y,+position.z };
 	vertices[face * 4 + 0].normal = { +0.0f,+0.0f,+1.0f };
 	vertices[face * 4 + 1].normal = { +0.0f,+0.0f,+1.0f };
 	vertices[face * 4 + 2].normal = { +0.0f,+0.0f,+1.0f };
@@ -248,10 +248,10 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 	// |		|
 	// 2--------3
 	face++;
-	vertices[face * 4 + 0].position = { -0.5f,-0.5f,+0.5f };
-	vertices[face * 4 + 1].position = { +0.5f,-0.5f,+0.5f };
-	vertices[face * 4 + 2].position = { -0.5f,-0.5f,-0.5f };
-	vertices[face * 4 + 3].position = { +0.5f,-0.5f,-0.5f };
+	vertices[face * 4 + 0].position = { -position.x,-position.y,+position.z };
+	vertices[face * 4 + 1].position = { +position.x,-position.y,+position.z };
+	vertices[face * 4 + 2].position = { -position.x,-position.y,-position.z };
+	vertices[face * 4 + 3].position = { +position.x,-position.y,-position.z };
 	vertices[face * 4 + 0].normal = { +0.0f,-1.0f,+0.0f };
 	vertices[face * 4 + 1].normal = { +0.0f,-1.0f,+0.0f };
 	vertices[face * 4 + 2].normal = { +0.0f,-1.0f,+0.0f };
@@ -270,10 +270,10 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 	// |		|
 	// 2--------3
 	face++;
-	vertices[face * 4 + 0].position = { -0.5f,+0.5f,-0.5f };
-	vertices[face * 4 + 1].position = { -0.5f,+0.5f,+0.5f };
-	vertices[face * 4 + 2].position = { -0.5f,-0.5f,-0.5f };
-	vertices[face * 4 + 3].position = { -0.5f,-0.5f,+0.5f };
+	vertices[face * 4 + 0].position = { -position.x,+position.y,-position.z };
+	vertices[face * 4 + 1].position = { -position.x,+position.y,+position.z };
+	vertices[face * 4 + 2].position = { -position.x,-position.y,-position.z };
+	vertices[face * 4 + 3].position = { -position.x,-position.y,+position.z };
 	vertices[face * 4 + 0].normal = { -1.0f,+0.0f,+0.0f };
 	vertices[face * 4 + 1].normal = { -1.0f,+0.0f,+0.0f };
 	vertices[face * 4 + 2].normal = { -1.0f,+0.0f,+0.0f };
@@ -309,10 +309,8 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create cuboid index buffer failed");
 
 	}
-
-
 }
-void GeometricPrimitive::DrawPrimitiveCuboid(const DirectX::XMFLOAT3& position, float length, float width, float height,const DirectX::XMFLOAT4& color)
+void GeometricPrimitive::DrawPrimitiveCuboid(const DirectX::XMFLOAT3& position, float length, float height, float width, const DirectX::XMFLOAT4& color)
 {
 	Cuboid cuboid;
 	cuboid.position = position;

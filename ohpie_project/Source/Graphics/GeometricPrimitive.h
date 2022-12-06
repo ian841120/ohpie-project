@@ -36,7 +36,8 @@ private:
 		float height;
 	};
 private:
-	void CreatePrimitiveCuboid(ID3D11Device* device);
+	void CreatePrimitiveCuboid(ID3D11Device* device, float length, float width, float height);
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	constant_buffer;
 

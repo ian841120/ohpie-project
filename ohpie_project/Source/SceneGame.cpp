@@ -7,7 +7,7 @@ void SceneGame::Initialize()
 {
 	//sprite[0] = std::make_unique<Sprite>(L"./Data/Image/cyberpunk.jpg");
 	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-
+	
 }
 void SceneGame::Update(float elapsed_time)
 {
@@ -17,10 +17,25 @@ void SceneGame::Update(float elapsed_time)
 	//ImGui Update
 	{
 		ImGui::Begin("ImGUI");
-		ImGui::SliderFloat("RADIUS", &r, 5, 30);
-		ImGui::SliderFloat("HEIGHT", &h, 5, 30);
-		ImGui::End();
+		if (ImGui::TreeNode("Light"))
+		{
+			ImGui::SliderFloat3("Direction", &light.direction.x, -30.0f, 30.0f);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Cuboid"))
+		{
+			ImGui::SliderFloat3("Position", &cuboid.position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &cuboid.color.x);
+			ImGui::SliderFloat("Length", &cuboid.length, 1, 30);
+			ImGui::SliderFloat("Height", &cuboid.height, 1, 30);
+			ImGui::SliderFloat("Width", &cuboid.width, 1, 30);
+			ImGui::TreePop();
+		}
+		
 
+		ImGui::End();
+		ImGui::Begin("ImGUI2");
+		ImGui::End();
 	}
 }
 void SceneGame::Render()
@@ -37,17 +52,17 @@ void SceneGame::Render()
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	Camera& camera = Camera::Instance();
 
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 10,0,0 }, 5, 10, 10, { 1,1,1,1 });
-	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), { 1.0f*cosf(angle),0.0f,1.0f*sinf(angle),0.0f });
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.height, cuboid.width, cuboid.color);
+	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), light.direction);
 
 
 	//graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
-	//graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
+	graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
 	//
-	//graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, r, h, { 1,1,1,1 });
-	//graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, r, h, { 1,1,1,1 });
-	//graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, r, h, { 0,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, 10, 10, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, 10, 10, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, 10, 10, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, 10, 10, { 0,1,1,1 });
 	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 	//sprite[0]->SetBlenderState(Sprite::BLENDER_STATE::NONE);
 	//sprite[0]->SetSamplerState(Sprite::SAMPLER_STATE::LINEAR_SAMPLER_STATE);

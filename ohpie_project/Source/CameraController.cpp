@@ -75,8 +75,9 @@ void CameraController::Update(float elapsedTime)
 	float sy = sinf(rotateY);
 	float cy = cosf(rotateY);
 	DirectX::XMVECTOR Focus = DirectX::XMLoadFloat3(&camera_focus);
-	DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(rotateX, rotateY, 0);
-	DirectX::XMVECTOR Front = Transform.r[2];
+	//DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(rotateX, rotateY, 0);
+	//DirectX::XMVECTOR Front = Transform.r[2];
+	DirectX::XMVECTOR Front = DirectX::XMVectorSet(-cx * sy, -sx, -cx * cy, 0.0f);
 	DirectX::XMVECTOR Distance = DirectX::XMVectorSet(distance, distance, distance, 0.0f);
 	Front = DirectX::XMVectorMultiply(Front, Distance);
 	DirectX::XMVECTOR Eye = DirectX::XMVectorSubtract(Focus, Front);
