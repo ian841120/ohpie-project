@@ -14,4 +14,6 @@ private:
 	std::unique_ptr<Sprite> sprite[2];
 	float r = 5;
 	float h = 5;
+
+	float angle = 0.0f;
 };

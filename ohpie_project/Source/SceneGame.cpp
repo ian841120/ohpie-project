@@ -13,6 +13,7 @@ void SceneGame::Update(float elapsed_time)
 {
 	//KeyBoardClass& keyBoard = InputClass::Instance().GetKeyBoard();
 	//x += 1*elapsed_time;
+	angle += 1*elapsed_time;
 	//ImGui Update
 	{
 		ImGui::Begin("ImGUI");
@@ -30,19 +31,23 @@ void SceneGame::Render()
 	ID3D11RenderTargetView* rtv = graphics.GetRenderTargetView();
 	ID3D11DepthStencilView* dsv = graphics.GetDepthStencilView();
 	//Screen clear and set render target view
-	FLOAT color[] = { 0.0f, 0.0f, 0.5f, 1.0f };	// RGBA(0.0`1.0)
+	FLOAT color[] = { 0.2f, 0.2f, 0.2f, 0.0f };	// RGBA(0.0`1.0)
 	dc->ClearRenderTargetView(rtv, color);
 	dc->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	Camera& camera = Camera::Instance();
 
-	graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
-	
-	graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, r, h, { 1,1,1,1 });
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 10,0,0 }, 5, 10, 10, { 1,1,1,1 });
+	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), { 1.0f*cosf(angle),0.0f,1.0f*sinf(angle),0.0f });
+
+
+	//graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
+	//graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
+	//
+	//graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, r, h, { 1,1,1,1 });
+	//graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, r, h, { 1,1,1,1 });
+	//graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, r, h, { 1,1,1,1 });
+	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, r, h, { 0,1,1,1 });
 	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 	//sprite[0]->SetBlenderState(Sprite::BLENDER_STATE::NONE);
 	//sprite[0]->SetSamplerState(Sprite::SAMPLER_STATE::LINEAR_SAMPLER_STATE);

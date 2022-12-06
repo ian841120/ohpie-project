@@ -48,6 +48,9 @@
     <None Include="HLSL\DebugRenderer.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\GeometricPrimitive.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\SpritePS.hlsl">
@@ -60,6 +63,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\DebugRendererPS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\GeometricPrimitiveVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\GeometricPrimitivePS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

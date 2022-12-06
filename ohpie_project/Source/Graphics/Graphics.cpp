@@ -75,7 +75,9 @@ Graphics::Graphics(HWND hwnd)
 		device_context->RSSetViewports(1, &viewport);
 	}
 
-
-	imguiClass = std::make_unique<ImGuiClass>(hwnd, device.Get(),device_context.Get());
-	debugRenderer = std::make_unique<DebugRenderer>(device.Get());
+	{
+		imguiClass = std::make_unique<ImGuiClass>(hwnd, device.Get(), device_context.Get());
+		debugRenderer = std::make_unique<DebugRenderer>(device.Get());
+		geometricPrimitive = std::make_unique<GeometricPrimitive>(device.Get());
+	}
 }
