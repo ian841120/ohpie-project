@@ -51,35 +51,33 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create constant buffer");
 
 	}
-	//Create blend state 
+	//Create blend state
 	{
-		D3D11_BLEND_DESC desc{};
-		desc.AlphaToCoverageEnable = false;
-		desc.IndependentBlendEnable = false;
-		desc.RenderTarget[0].BlendEnable = false;
-		desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		D3D11_BLEND_DESC blend_desc{};
+		blend_desc.AlphaToCoverageEnable = false;
+		blend_desc.IndependentBlendEnable = false;
+		blend_desc.RenderTarget[0].BlendEnable = false;
+		blend_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blend_desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blend_desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blend_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blend_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blend_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		HRESULT hr = device->CreateBlendState(&desc, blend_state.GetAddressOf());
+		HRESULT hr = device->CreateBlendState(&blend_desc, blend_state.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create blend state");
-
 	}
 	//Create depth stencil buffer
 	{
-		D3D11_DEPTH_STENCIL_DESC desc{};
-		desc.DepthEnable = true;
-		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{};
+		depth_stencil_desc.DepthEnable = true;
+		depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depth_stencil_desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-		HRESULT hr = device->CreateDepthStencilState(&desc, depth_stencil_state.GetAddressOf());
+		HRESULT hr = device->CreateDepthStencilState(&depth_stencil_desc, depth_stencil_state.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create depth stencil state");
 	}
-
 	//Create rasterizer state
 	{
 		D3D11_RASTERIZER_DESC rasterize_desc{};
@@ -95,7 +93,7 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 		rasterize_desc.AntialiasedLineEnable = false;
 
 		hr = device->CreateRasterizerState(&rasterize_desc, rasterizer_state.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create rasterizer state failed");
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create rasterizer state");
 
 	}
 	CreatePrimitiveCuboid(device, 1.0f, 1.0f, 1.0f);

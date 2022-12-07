@@ -37,27 +37,27 @@ Graphics::Graphics(HWND hwnd)
 	}
 	//Create renderTargetView
 	{
-		Microsoft::WRL::ComPtr<ID3D11Texture2D> m_back_buffer;
-		hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<LPVOID*>(m_back_buffer.GetAddressOf()));
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer;
+		hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<LPVOID*>(back_buffer.GetAddressOf()));
 		_ASSERT_EXPR(SUCCEEDED(hr), L"GET BACK BUFFER FAILED");
-		hr = device->CreateRenderTargetView(m_back_buffer.Get(), NULL, render_target_view.GetAddressOf());
+		hr = device->CreateRenderTargetView(back_buffer.Get(), NULL, render_target_view.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"CREATE RENDERTARGETVIEW FAILED");
 	}
 	//Create depthStecilView
 	{
-		D3D11_TEXTURE2D_DESC m_depth_stencil_buffer_desc{};
-		m_depth_stencil_buffer_desc.Width = screenWidth;
-		m_depth_stencil_buffer_desc.Height = screenHeight;
-		m_depth_stencil_buffer_desc.MipLevels = 1;
-		m_depth_stencil_buffer_desc.ArraySize = 1;
-		m_depth_stencil_buffer_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		m_depth_stencil_buffer_desc.SampleDesc.Count = 1;
-		m_depth_stencil_buffer_desc.SampleDesc.Quality = 0;
-		m_depth_stencil_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-		m_depth_stencil_buffer_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		m_depth_stencil_buffer_desc.CPUAccessFlags = 0;
-		m_depth_stencil_buffer_desc.MiscFlags = 0;
-		hr = device->CreateTexture2D(&m_depth_stencil_buffer_desc, NULL, depth_stencil_buffer.GetAddressOf());
+		D3D11_TEXTURE2D_DESC depth_stencil_buffer_desc{};
+		depth_stencil_buffer_desc.Width = screenWidth;
+		depth_stencil_buffer_desc.Height = screenHeight;
+		depth_stencil_buffer_desc.MipLevels = 1;
+		depth_stencil_buffer_desc.ArraySize = 1;
+		depth_stencil_buffer_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depth_stencil_buffer_desc.SampleDesc.Count = 1;
+		depth_stencil_buffer_desc.SampleDesc.Quality = 0;
+		depth_stencil_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+		depth_stencil_buffer_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depth_stencil_buffer_desc.CPUAccessFlags = 0;
+		depth_stencil_buffer_desc.MiscFlags = 0;
+		hr = device->CreateTexture2D(&depth_stencil_buffer_desc, NULL, depth_stencil_buffer.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"CREATE DEPTHSTECILBUFFER FAILED");
 		hr = device->CreateDepthStencilView(depth_stencil_buffer.Get(), nullptr, depth_stencil_view.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"CREATE DEPTHSTECILVIEW FAILED");
@@ -79,5 +79,6 @@ Graphics::Graphics(HWND hwnd)
 		imguiClass = std::make_unique<ImGuiClass>(hwnd, device.Get(), device_context.Get());
 		debugRenderer = std::make_unique<DebugRenderer>(device.Get());
 		geometricPrimitive = std::make_unique<GeometricPrimitive>(device.Get());
+		lineRenderer = std::make_unique<LineRenderer>(device.Get(), 1024);
 	}
 }

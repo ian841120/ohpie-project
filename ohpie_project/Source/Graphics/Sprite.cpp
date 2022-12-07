@@ -396,7 +396,7 @@ void Sprite::render(ID3D11DeviceContext* device_context,float dx,float dy,float 
 	//Edit vertex data 
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
 	hr = device_context->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
-	_ASSERT_EXPR(SUCCEEDED(hr), L"Srite Map Failed");
+	_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to Mapping");
 	//Used pData to rewrite vertex data
 	Vertex* vertices{ reinterpret_cast<Vertex*>(mapped_subresource.pData) };
 	if (vertices != nullptr)

@@ -12,8 +12,8 @@ CameraController::CameraController()
 		camera_up
 	);
 	camera.SetPerspectiveFov(
-		DirectX::XMConvertToRadians(25.0f),
-		1280.0f / 720.0f,
+		DirectX::XMConvertToRadians(50.0f),
+		1960.0f / 1080.0f,
 		1.0f,
 		10000.0f
 	);
@@ -77,6 +77,7 @@ void CameraController::Update(float elapsedTime)
 	DirectX::XMVECTOR Focus = DirectX::XMLoadFloat3(&camera_focus);
 	//DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(rotateX, rotateY, 0);
 	//DirectX::XMVECTOR Front = Transform.r[2];
+	// TODO 1 : Question1
 	DirectX::XMVECTOR Front = DirectX::XMVectorSet(-cx * sy, -sx, -cx * cy, 0.0f);
 	DirectX::XMVECTOR Distance = DirectX::XMVectorSet(distance, distance, distance, 0.0f);
 	Front = DirectX::XMVectorMultiply(Front, Distance);

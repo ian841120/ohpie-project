@@ -51,6 +51,9 @@
     <None Include="HLSL\GeometricPrimitive.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\LineRenderer.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\SpritePS.hlsl">
@@ -69,6 +72,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\GeometricPrimitivePS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\LineRendererVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\LineRendererPS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
@@ -139,6 +148,9 @@
     <ClInclude Include="Source\Graphics\GeometricPrimitive.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\LineRenderer.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -202,6 +214,9 @@
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\GeometricPrimitive.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\LineRenderer.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

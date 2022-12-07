@@ -4,6 +4,7 @@
 #include "ImguiClass.h"
 #include "DebugRenderer.h"
 #include "GeometricPrimitive.h"
+#include "LineRenderer.h"
 class Graphics
 {
 public:
@@ -22,6 +23,7 @@ public:
 	ImGuiClass*				GetImGuiClass() const { return imguiClass.get(); }
 	DebugRenderer*			GetDebugRenderer() const { return debugRenderer.get(); }
 	GeometricPrimitive*		GetGeometricPrimitive()const { return geometricPrimitive.get(); }
+	LineRenderer*			GetLineRenderer()const { return lineRenderer.get(); }
 private:
 	static Graphics*								instance;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -34,6 +36,7 @@ private:
 	std::unique_ptr<ImGuiClass>						imguiClass;
 	std::unique_ptr<DebugRenderer>					debugRenderer;
 	std::unique_ptr<GeometricPrimitive>				geometricPrimitive;
+	std::unique_ptr<LineRenderer>					lineRenderer;
 	float screenWidth;
 	float screenHeight;
 };

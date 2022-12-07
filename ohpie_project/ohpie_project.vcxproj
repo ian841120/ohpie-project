@@ -173,6 +173,7 @@
   <ItemGroup>
     <None Include="HLSL\DebugRenderer.hlsli" />
     <None Include="HLSL\GeometricPrimitive.hlsli" />
+    <None Include="HLSL\LineRenderer.hlsli" />
     <None Include="HLSL\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +196,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\GeometricPrimitiveVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\LineRendererPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\LineRendererVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -231,6 +244,7 @@
     <ClInclude Include="Source\Graphics\GeometricPrimitive.h" />
     <ClInclude Include="Source\Graphics\Graphics.h" />
     <ClInclude Include="Source\Graphics\ImguiClass.h" />
+    <ClInclude Include="Source\Graphics\LineRenderer.h" />
     <ClInclude Include="Source\Graphics\Sprite.h" />
     <ClInclude Include="Source\Input\InputClass.h" />
     <ClInclude Include="Source\Input\KeyboardClass.h" />
@@ -253,6 +267,7 @@
     <ClCompile Include="Source\Graphics\GeometricPrimitive.cpp" />
     <ClCompile Include="Source\Graphics\Graphics.cpp" />
     <ClCompile Include="Source\Graphics\ImGuiClass.cpp" />
+    <ClCompile Include="Source\Graphics\LineRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Sprite.cpp" />
     <ClCompile Include="Source\Input\InputClass.cpp" />
     <ClCompile Include="Source\Input\KeyboardClass.cpp" />

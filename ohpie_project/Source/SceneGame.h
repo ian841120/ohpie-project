@@ -10,6 +10,7 @@ public:
 	void Finalize();
 	void Update(float elapsed_time);
 	void Render();
+	void DrawGrid();
 private:
 	std::unique_ptr<Sprite> sprite[2];
 	struct Cuboid

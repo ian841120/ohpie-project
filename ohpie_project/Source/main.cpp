@@ -1,8 +1,8 @@
 
 #include <windows.h>
 #include "Framework.h"
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1960
+#define SCREEN_HEIGHT 1080
 static const LPCWSTR CLASS_NAME = L"OHPIE_GAME";
 LRESULT CALLBACK fnWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

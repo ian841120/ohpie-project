@@ -58,12 +58,15 @@ void SceneGame::Render()
 
 	//graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
 	graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
-	//
+	
 	graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, 10, 10, { 1,1,1,1 });
 	graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, 10, 10, { 1,1,1,1 });
 	graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, 10, 10, { 1,1,1,1 });
 	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, 10, 10, { 0,1,1,1 });
 	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
+
+	DrawGrid();
+	graphics.GetLineRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 	//sprite[0]->SetBlenderState(Sprite::BLENDER_STATE::NONE);
 	//sprite[0]->SetSamplerState(Sprite::SAMPLER_STATE::LINEAR_SAMPLER_STATE);
 	//sprite[0]->render(dc, 0, 0, 1280, 720);
@@ -74,4 +77,18 @@ void SceneGame::Render()
 }
 void SceneGame::Finalize()
 {
+}
+void SceneGame::DrawGrid()
+{
+	Graphics& graphics = Graphics::GetInstance();
+	//X Axis 
+	graphics.GetLineRenderer()->AddVertex({ 0,0,0 }, { 1,0,0,1 });
+	graphics.GetLineRenderer()->AddVertex({ 75,0,0 }, { 1,0,0,1 });
+	//Y Axis
+	graphics.GetLineRenderer()->AddVertex({ 0,0,0 }, { 0,1,0,1 });
+	graphics.GetLineRenderer()->AddVertex({ 0,75,0 }, { 0,1,0,1 });
+	//Z Axis
+	graphics.GetLineRenderer()->AddVertex({ 0,0,0 }, { 0,0,1,1 });
+	graphics.GetLineRenderer()->AddVertex({ 0,0,75 }, { 0,0,1,1 });
+
 }
