@@ -97,7 +97,7 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 
 	}
 	CreatePrimitiveCuboid(device, 1.0f, 1.0f, 1.0f);
-
+	CreatePrimitiveCylinder(device, { 0.0f,0.0f,0.0f }, 1.0f, 1.0f, 1.0f, 16);
 }
 void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection, const DirectX::XMFLOAT4& lightDirection)
 {
@@ -143,6 +143,26 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 
 	}
 	cuboids.clear();
+	//Draw cylinder
+
+	device_context->IASetVertexBuffers(0, 1, cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
+	device_context->IASetIndexBuffer(cylinder_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	for (const Cylinder& cylinder : cylinders)
+	{
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(cylinder.radius, cylinder.height, cylinder.radius);
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(cylinder.position.x, cylinder.position.y, cylinder.position.z);
+		DirectX::XMMATRIX W = S * T;
+		Cbuffer cbuffer;
+		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
+		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
+		cbuffer.lightDirection = lightDirection;
+		cbuffer.color = cylinder.color;
+		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		device_context->DrawIndexed(cylinderIndexCount, 0, 0);
+
+	}
+	cylinders.clear();
 }
 void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device, float length, float width, float height)
 {
@@ -298,14 +318,125 @@ void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device, float lengt
 		subresource_data.SysMemPitch = 0;
 		subresource_data.SysMemSlicePitch = 0;
 		HRESULT hr = device->CreateBuffer(&buffer_desc, &subresource_data, cuboid_vertex_buffer.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create cuboid vertex buffer failed");
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create cuboid vertex buffer ");
 		// Index buffer
 		buffer_desc.ByteWidth = static_cast<UINT>(sizeof(indices));
 		buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		subresource_data.pSysMem = indices;
 		hr = device->CreateBuffer(&buffer_desc, &subresource_data, cuboid_index_buffer.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create cuboid index buffer failed");
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed create cuboid index buffer ");
 
+	}
+}
+void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius1, float radius2, float height, int slices)
+{
+	std::vector<Vertex>vertices;
+	std::vector<UINT>indices;
+	Vertex vertex;
+	float thetaStep = DirectX::XM_2PI / slices;
+	// Create bottom center
+	vertex.position = start;
+	vertex.normal = { 0.0f,-1.0f,0.0f };
+	vertices.emplace_back(vertex);
+	// Create bottom vertex
+	for (int i = 0; i < slices; i++)
+	{
+		vertex.position = { radius1 * cosf(i * thetaStep),start.y,radius1 * sinf(i * thetaStep) };
+		vertex.normal = { 0.0f,-1.0f,0.0f };
+		vertices.emplace_back(vertex);
+	}
+	// Create top center
+	vertex.position = { start.x,start.y + height,start.z };
+	vertex.normal = { 0.0f,1.0f,0.0f };
+	vertices.emplace_back(vertex);
+	// Create top vertex 
+	for (int i = 0; i < slices; i++)
+	{
+		vertex.position = { radius2 * cosf(i * thetaStep),start.y + height,radius2 * sinf(i * thetaStep) };
+		vertex.normal = { 0.0f,1.0f,0.0f };
+		vertices.emplace_back(vertex);
+	}
+	// Create bottom side vertex
+	for (int i = 0; i < slices; i++)
+	{
+		vertex.position = { radius1 * cosf(i * thetaStep),start.y,radius1 * sinf(i * thetaStep) };
+		vertex.normal = { cosf(i * thetaStep),0.0f,sinf(i * thetaStep) };
+		vertices.emplace_back(vertex);
+	}
+	// Create top side vertex 
+	for (int i = 0; i < slices; i++)
+	{
+		vertex.position = { radius1 * cosf(i * thetaStep),start.y + height,radius1 * sinf(i * thetaStep) };
+		vertex.normal = { cosf(i * thetaStep),0.0f,sinf(i * thetaStep) };
+		vertices.emplace_back(vertex);
+	}
+
+	// Bottom index
+	int count = 0;
+	for (int i = 0; i < (slices-1)*3;i+=3 )
+	{
+		indices.emplace_back(static_cast<UINT>(count + i % 3));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 + 1));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 + 2));
+	}
+	indices.emplace_back(static_cast<UINT>(count + 0));
+	indices.emplace_back(static_cast<UINT>(count + slices));
+	indices.emplace_back(static_cast<UINT>(count + 1));
+	count += slices + 1;
+	// Top index
+	for (int i = 0; i < (slices - 1) * 3; i += 3)
+	{
+		indices.emplace_back(static_cast<UINT>(count + i % 3));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 + 2));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 + 1));
+	}
+	indices.emplace_back(static_cast<UINT>(count + 0));
+	indices.emplace_back(static_cast<UINT>(count + 1));
+	indices.emplace_back(static_cast<UINT>(count + slices));
+	// Side index
+	count += slices + 1;
+	for (int i = 0; i < (slices - 1) * 3; i += 3)
+	{
+		indices.emplace_back(static_cast<UINT>(count + i / 3));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 + slices));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 +1 ));
+	}
+	indices.emplace_back(static_cast<UINT>(count + slices-1));
+	indices.emplace_back(static_cast<UINT>(count + 0));
+	indices.emplace_back(static_cast<UINT>(count + slices+slices-1));
+
+	count += slices;
+	for (int i = 0; i < (slices - 1) * 3; i += 3)
+	{
+		indices.emplace_back(static_cast<UINT>(count + i / 3));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 + 1));
+		indices.emplace_back(static_cast<UINT>(count + i / 3 - slices + 1));
+	}
+	indices.emplace_back(static_cast<UINT>(count + slices - 1));
+	indices.emplace_back(static_cast<UINT>(count + 0));
+	indices.emplace_back(static_cast<UINT>(count - slices));
+
+	cylinderIndexCount = static_cast<UINT>(indices.size());
+	//Create Vertex buffer
+	{
+		D3D11_BUFFER_DESC buffer_desc{};
+		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
+		buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+		buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		buffer_desc.CPUAccessFlags = 0;
+		buffer_desc.MiscFlags = 0;
+		buffer_desc.StructureByteStride = 0;
+		D3D11_SUBRESOURCE_DATA subresource_data{};
+		subresource_data.pSysMem = vertices.data();
+		subresource_data.SysMemPitch = 0;
+		subresource_data.SysMemSlicePitch = 0;
+		HRESULT hr = device->CreateBuffer(&buffer_desc, &subresource_data, cylinder_vertex_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder vertex buffer ");
+		buffer_desc.ByteWidth = static_cast<UINT>(indices.size() * sizeof(UINT));
+		buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		subresource_data.pSysMem = indices.data();
+		hr = device->CreateBuffer(&buffer_desc, &subresource_data, cylinder_index_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder index buffer ");
 	}
 }
 void GeometricPrimitive::DrawPrimitiveCuboid(const DirectX::XMFLOAT3& position, float length, float height, float width, const DirectX::XMFLOAT4& color)
@@ -317,4 +448,13 @@ void GeometricPrimitive::DrawPrimitiveCuboid(const DirectX::XMFLOAT3& position, 
 	cuboid.height = height;
 	cuboid.color = color;
 	cuboids.emplace_back(cuboid);
+}
+void GeometricPrimitive::DrawPrimitiveCylinder(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
+{
+	Cylinder cylinder;
+	cylinder.position = position;
+	cylinder.height = height;
+	cylinder.radius = radius;
+	cylinder.color = color;
+	cylinders.emplace_back(cylinder);
 }

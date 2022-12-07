@@ -31,7 +31,15 @@ void SceneGame::Update(float elapsed_time)
 			ImGui::SliderFloat("Width", &cuboid.width, 1, 30);
 			ImGui::TreePop();
 		}
-		
+		if (ImGui::TreeNode("Cylinder"))
+		{
+			ImGui::SliderFloat3("Position", &cylinder.position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &cylinder.color.x);
+			ImGui::SliderFloat("Radius", &cylinder.radius, 1, 30);
+			ImGui::SliderFloat("Height", &cylinder.height, 1, 30);
+			ImGui::TreePop();
+		}
+
 
 		ImGui::End();
 		ImGui::Begin("ImGUI2");
@@ -50,29 +58,17 @@ void SceneGame::Render()
 	dc->ClearRenderTargetView(rtv, color);
 	dc->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	dc->OMSetRenderTargets(1, &rtv, dsv);
+	//Render
 	Camera& camera = Camera::Instance();
 
 	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.height, cuboid.width, cuboid.color);
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCylinder(cylinder.position, cylinder.radius, cylinder.height, cylinder.color);
 	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), light.direction);
 
 
-	//graphics.GetDebugRenderer()->DrawCylinder({ -40,0,0 }, r, h, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawSphere({ 0,0,0 }, 0.5f, { 1,0,0,1 });
-	
-	graphics.GetDebugRenderer()->DrawCapsule({ 0,0,0 }, 10, 10, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 10,0,0 }, 10, 10, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 20,0,0 }, 10, 10, { 1,1,1,1 });
-	graphics.GetDebugRenderer()->DrawCapsule({ 30,0,0 }, 10, 10, { 0,1,1,1 });
-	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
-
 	DrawGrid();
 	graphics.GetLineRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
-	//sprite[0]->SetBlenderState(Sprite::BLENDER_STATE::NONE);
-	//sprite[0]->SetSamplerState(Sprite::SAMPLER_STATE::LINEAR_SAMPLER_STATE);
-	//sprite[0]->render(dc, 0, 0, 1280, 720);
-	//
-	//sprite[1]->SetBlenderState(Sprite::BLENDER_STATE::ALPHA);
-	//sprite[1]->render(dc, x, y, 200, 200, 1, 1, 1, 1, 0, 0, 0, 140, 240);
+	
 
 }
 void SceneGame::Finalize()

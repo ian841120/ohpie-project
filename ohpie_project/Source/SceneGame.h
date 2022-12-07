@@ -21,6 +21,13 @@ private:
 		float width;
 		float height;
 	};
+	struct Cylinder
+	{
+		DirectX::XMFLOAT4	color;
+		DirectX::XMFLOAT3	position;
+		float				radius;
+		float				height;
+	};
 
 	struct Light
 	{
@@ -28,6 +35,7 @@ private:
 	};
 private:
 	Light light{ {0.0f, 0.0f, 0.0f,0.0f} };
-	Cuboid cuboid{ {1.0f,1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f},5.0f,5.0f,5.0f };
+	Cuboid cuboid{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},5.0f,5.0f,5.0f };
+	Cylinder cylinder{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f} ,5.0f,5.0f };
 	float angle = 0.0f;
 };
