@@ -40,6 +40,13 @@ void SceneGame::Update(float elapsed_time)
 			ImGui::TreePop();
 		}
 
+		if (ImGui::TreeNode("Sphere"))
+		{
+			ImGui::SliderFloat3("Position", &sphere.position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &sphere.color.x);
+			ImGui::SliderFloat("Radius", &sphere.radius, 1, 30);
+			ImGui::TreePop();
+		}
 
 		ImGui::End();
 		ImGui::Begin("ImGUI2");
@@ -60,7 +67,7 @@ void SceneGame::Render()
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	//Render
 	Camera& camera = Camera::Instance();
-	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ 0.0f,0.0f,0.0f }, 10.0f, { 1.0f,1.0f,1.0f,1.0f });
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCone({ 0.0f,0.0f,0.0f }, 10.0f, 10.0f, {1.0f,1.0f,1.0f,1.0f});
 	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), light.direction);
 
 

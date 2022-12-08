@@ -98,7 +98,7 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 	}
 	CreatePrimitiveCuboid(device, 1.0f, 1.0f, 1.0f);
 	CreatePrimitiveCylinder(device, { 0.0f,0.0f,0.0f }, 1.0f, 1.0f, 1.0f, 16);
-	CreatePrimitiveCone(device, { 0.0f,0.0f,0.0f }, 1.0f, 0.0f, 1.0f, 16);
+	CreatePrimitiveCone(device, { 0.0f,0.0f,0.0f }, 1.0f, 1.0f, 16);
 	CreatePrimitiveSphere(device, { 0.0f,0.0f,0.0f }, 1.0f, 16, 16);
 
 }
@@ -169,8 +169,6 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 	// Draw Corn 
 	device_context->IASetVertexBuffers(0, 1, cone_vertex_buffer.GetAddressOf(), &stride, &offset);
 	device_context->IASetIndexBuffer(cone_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-
 	for (const Cone& cone : cones)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(cone.radius, cone.height, cone.radius);
@@ -182,7 +180,7 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		cbuffer.lightDirection = lightDirection;
 		cbuffer.color = cone.color;
 		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(cylinderIndexCount, 0, 0);
+		device_context->DrawIndexed(coneIndexCount, 0, 0);
 
 	}
 	cones.clear();
@@ -460,7 +458,6 @@ void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const Dir
 
 	cylinderIndexCount = static_cast<UINT>(indices.size());
 	//Create Vertex buffer
-	if(radius2!=0)
 	{
 		D3D11_BUFFER_DESC buffer_desc{};
 		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
@@ -481,7 +478,58 @@ void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const Dir
 		hr = device->CreateBuffer(&buffer_desc, &subresource_data, cylinder_index_buffer.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder index buffer ");
 	}
-	else // Cone
+}
+void GeometricPrimitive::CreatePrimitiveCone(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius, float height, int slices)
+{
+	// We can think of the cone as a cylinder with a top  radius of 0
+	std::vector<Vertex>vertices;
+	std::vector<UINT>indices;
+	Vertex vertex;
+	// Bottom center
+	vertex.position = start;
+	vertex.normal = { 0.0f,-1.0f,0.0f };
+	float thetaStep = DirectX::XM_2PI / slices;
+	// Bottom vertex
+	for (int i = 0; i <= slices; i++)
+	{
+		float theta = i * thetaStep;
+		float x = radius * cosf(theta);
+		float y = start.y;
+		float z = radius * sinf(theta);
+		vertex.position = { x,y,z };
+		vertex.normal = { 0.0f,-1.0f,0.0f };
+		vertices.emplace_back(vertex);
+	}
+	//Side vertex
+	for (int i = 0; i <= slices; i++)
+	{
+		float theta = i * thetaStep;
+		float x = radius * cosf(theta);
+		float y = start.y;
+		float z = radius * sinf(theta);
+		vertex.position = { x,y,z };
+		vertex.normal = { x,0.0f,z };
+		vertices.emplace_back(vertex);
+	}
+	// Top vertex
+	vertex.position = { start.x,start.y + height,start.z };
+	vertex.position = { 0.0f,1.0f,0.0f };
+	vertices.emplace_back(vertex);
+
+	// Bottom index
+	for (int i = 1; i <= slices; i++)
+	{
+		indices.emplace_back(0);
+		indices.emplace_back(i + 1);
+		indices.emplace_back(i);
+	}
+	// Side index
+	indices.emplace_back(15);
+	indices.emplace_back(16);
+	indices.emplace_back(34);
+
+	coneIndexCount = static_cast<UINT>(indices.size());
+	//Create buffers
 	{
 		D3D11_BUFFER_DESC buffer_desc{};
 		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
@@ -503,13 +551,7 @@ void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const Dir
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder index buffer ");
 
 	}
-}
 
-void GeometricPrimitive::CreatePrimitiveCone(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius1, float radius2, float height, int slices)
-{
-	// TODO 2 :cone 
-	// We can think of the cone as a cylinder with a top  radius of 0
-	CreatePrimitiveCylinder(device,start,radius1,radius2,height,slices);
 }
 void GeometricPrimitive::CreatePrimitiveSphere(ID3D11Device* device, const DirectX::XMFLOAT3& center, float radius, int slices, int stacks)
 {
@@ -549,13 +591,33 @@ void GeometricPrimitive::CreatePrimitiveSphere(ID3D11Device* device, const Direc
 		indices.emplace_back(i);
 		indices.emplace_back(i + 1);
 	}
+	// Side index
+	UINT start = 1;
+	
+	for (int i = 0; i < stacks-2; i++)
+	{
+		for (int j = 0; j < slices; j++)
+		{
+			indices.emplace_back(j + start);
+			indices.emplace_back(j + start + (stacks + 1));
+			indices.emplace_back(j + start + (stacks + 1) + 1);
+
+			indices.emplace_back(j + start);
+			indices.emplace_back(j + start + (stacks + 1) + 1);
+			indices.emplace_back(j + start + 1);
+
+		}
+		start += slices + 1;
+
+	}
+
 	// Bottom index
 	for (int i = 1; i <= slices; i++)
 	{
 		indices.emplace_back((stacks - 1) * (slices + 1) + 1);
 		indices.emplace_back((stacks - 2) * (slices + 1) + i + 1);
 		indices.emplace_back((stacks - 2) * (slices + 1) + i);
-
+	
 	}
 	sphereIndexCount = static_cast<UINT>(indices.size());
 	//Create vertex buffer

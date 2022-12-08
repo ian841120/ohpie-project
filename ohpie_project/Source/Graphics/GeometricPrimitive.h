@@ -60,7 +60,7 @@ private:
 private:
 	void CreatePrimitiveCuboid(ID3D11Device* device, float length, float width, float height);
 	void CreatePrimitiveCylinder(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius1, float radius2, float height, int slices);
-	void CreatePrimitiveCone(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius1, float radius2, float height, int slices);
+	void CreatePrimitiveCone(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius1, float height, int slices);
 	void CreatePrimitiveSphere(ID3D11Device* device, const DirectX::XMFLOAT3& center, float radius, int slices, int stacks);
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	constant_buffer;
@@ -94,4 +94,5 @@ private:
 	UINT	cuboidIndexCount = 0;
 	UINT	cylinderIndexCount = 0;
 	UINT	sphereIndexCount = 0;
+	UINT	coneIndexCount = 0;
 };
