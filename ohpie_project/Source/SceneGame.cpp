@@ -60,9 +60,7 @@ void SceneGame::Render()
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	//Render
 	Camera& camera = Camera::Instance();
-
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.height, cuboid.width, cuboid.color);
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCylinder(cylinder.position, cylinder.radius, cylinder.height, cylinder.color);
+	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ 0.0f,0.0f,0.0f }, 10.0f, { 1.0f,1.0f,1.0f,1.0f });
 	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), light.direction);
 
 

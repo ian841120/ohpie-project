@@ -98,6 +98,9 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 	}
 	CreatePrimitiveCuboid(device, 1.0f, 1.0f, 1.0f);
 	CreatePrimitiveCylinder(device, { 0.0f,0.0f,0.0f }, 1.0f, 1.0f, 1.0f, 16);
+	CreatePrimitiveCone(device, { 0.0f,0.0f,0.0f }, 1.0f, 0.0f, 1.0f, 16);
+	CreatePrimitiveSphere(device, { 0.0f,0.0f,0.0f }, 1.0f, 16, 16);
+
 }
 void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection, const DirectX::XMFLOAT4& lightDirection)
 {
@@ -163,6 +166,45 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 
 	}
 	cylinders.clear();
+	// Draw Corn 
+	device_context->IASetVertexBuffers(0, 1, cone_vertex_buffer.GetAddressOf(), &stride, &offset);
+	device_context->IASetIndexBuffer(cone_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+
+
+	for (const Cone& cone : cones)
+	{
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(cone.radius, cone.height, cone.radius);
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(cone.position.x, cone.position.y, cone.position.z);
+		DirectX::XMMATRIX W = S * T;
+		Cbuffer cbuffer;
+		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
+		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
+		cbuffer.lightDirection = lightDirection;
+		cbuffer.color = cone.color;
+		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		device_context->DrawIndexed(cylinderIndexCount, 0, 0);
+
+	}
+	cones.clear();
+	//Draw sphere
+	device_context->IASetVertexBuffers(0, 1, sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
+	device_context->IASetIndexBuffer(sphere_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	for (const Sphere& sphere : spheres)
+	{
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(sphere.radius, sphere.radius, sphere.radius);
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(sphere.position.x, sphere.position.y, sphere.position.z);
+		DirectX::XMMATRIX W = S * T;
+		Cbuffer cbuffer;
+		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
+		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
+		cbuffer.lightDirection = lightDirection;
+		cbuffer.color = sphere.color;
+		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		device_context->DrawIndexed(sphereIndexCount, 0, 0);
+
+	}
+	spheres.clear();
+
 }
 void GeometricPrimitive::CreatePrimitiveCuboid(ID3D11Device* device, float length, float width, float height)
 {
@@ -366,7 +408,7 @@ void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const Dir
 	// Create top side vertex 
 	for (int i = 0; i < slices; i++)
 	{
-		vertex.position = { radius1 * cosf(i * thetaStep),start.y + height,radius1 * sinf(i * thetaStep) };
+		vertex.position = { radius2 * cosf(i * thetaStep),start.y + height,radius2 * sinf(i * thetaStep) };
 		vertex.normal = { cosf(i * thetaStep),0.0f,sinf(i * thetaStep) };
 		vertices.emplace_back(vertex);
 	}
@@ -418,6 +460,7 @@ void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const Dir
 
 	cylinderIndexCount = static_cast<UINT>(indices.size());
 	//Create Vertex buffer
+	if(radius2!=0)
 	{
 		D3D11_BUFFER_DESC buffer_desc{};
 		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
@@ -438,7 +481,107 @@ void GeometricPrimitive::CreatePrimitiveCylinder(ID3D11Device* device, const Dir
 		hr = device->CreateBuffer(&buffer_desc, &subresource_data, cylinder_index_buffer.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder index buffer ");
 	}
+	else // Cone
+	{
+		D3D11_BUFFER_DESC buffer_desc{};
+		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
+		buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+		buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		buffer_desc.CPUAccessFlags = 0;
+		buffer_desc.MiscFlags = 0;
+		buffer_desc.StructureByteStride = 0;
+		D3D11_SUBRESOURCE_DATA subresource_data{};
+		subresource_data.pSysMem = vertices.data();
+		subresource_data.SysMemPitch = 0;
+		subresource_data.SysMemSlicePitch = 0;
+		HRESULT hr = device->CreateBuffer(&buffer_desc, &subresource_data, cone_vertex_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder vertex buffer ");
+		buffer_desc.ByteWidth = static_cast<UINT>(indices.size() * sizeof(UINT));
+		buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		subresource_data.pSysMem = indices.data();
+		hr = device->CreateBuffer(&buffer_desc, &subresource_data, cone_index_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to cylinder index buffer ");
+
+	}
 }
+
+void GeometricPrimitive::CreatePrimitiveCone(ID3D11Device* device, const DirectX::XMFLOAT3& start, float radius1, float radius2, float height, int slices)
+{
+	// TODO 2 :cone 
+	// We can think of the cone as a cylinder with a top  radius of 0
+	CreatePrimitiveCylinder(device,start,radius1,radius2,height,slices);
+}
+void GeometricPrimitive::CreatePrimitiveSphere(ID3D11Device* device, const DirectX::XMFLOAT3& center, float radius, int slices, int stacks)
+{
+	std::vector<Vertex> vertices;
+	std::vector<UINT>indices;
+	Vertex vertex;
+	// top position
+	vertex.position = { center.x,center.y + radius,center.z };
+	vertex.normal = { 0.0f,1.0f,0.0f };
+	vertices.emplace_back(vertex);
+	float thetaStep = DirectX::XM_2PI / slices;
+	float phiStep = DirectX::XM_PI / stacks;
+	// vertex
+	for (int i = 1; i <= stacks-1; i++)
+	{
+		float phi = i * phiStep;
+		for (int j = 0; j <= slices; j++)
+		{
+			float theta = j * thetaStep;
+			float x = radius * sinf(phi) * cosf(theta);
+			float y = radius * cosf(phi);
+			float z = radius * sinf(phi) * sinf(theta);
+
+			vertex.position = { x,y,z };
+			vertex.normal = { x,y,z };
+			vertices.emplace_back(vertex);
+		}
+	}
+	// bottom position	
+	vertex.position = { center.x,center.y - radius,center.z };
+	vertex.normal = { 0.0f,-1.0f,0.0f };
+	vertices.emplace_back(vertex);
+	// Top index
+	for (int i = 1; i <= slices; i++)
+	{
+		indices.emplace_back(0);
+		indices.emplace_back(i);
+		indices.emplace_back(i + 1);
+	}
+	// Bottom index
+	for (int i = 1; i <= slices; i++)
+	{
+		indices.emplace_back((stacks - 1) * (slices + 1) + 1);
+		indices.emplace_back((stacks - 2) * (slices + 1) + i + 1);
+		indices.emplace_back((stacks - 2) * (slices + 1) + i);
+
+	}
+	sphereIndexCount = static_cast<UINT>(indices.size());
+	//Create vertex buffer
+	{
+		D3D11_BUFFER_DESC buffer_desc{};
+		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
+		buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+		buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		buffer_desc.CPUAccessFlags = 0;
+		buffer_desc.MiscFlags = 0;
+		buffer_desc.StructureByteStride = 0;
+		D3D11_SUBRESOURCE_DATA subresource_data{};
+		subresource_data.pSysMem = vertices.data();
+		subresource_data.SysMemPitch = 0;
+		subresource_data.SysMemSlicePitch = 0;
+		HRESULT hr = device->CreateBuffer(&buffer_desc, &subresource_data, sphere_vertex_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to sphere vertex buffer ");
+		buffer_desc.ByteWidth = static_cast<UINT>(indices.size() * sizeof(UINT));
+		buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		subresource_data.pSysMem = indices.data();
+		hr = device->CreateBuffer(&buffer_desc, &subresource_data, sphere_index_buffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to sphere index buffer ");
+	}
+
+}
+
 void GeometricPrimitive::DrawPrimitiveCuboid(const DirectX::XMFLOAT3& position, float length, float height, float width, const DirectX::XMFLOAT4& color)
 {
 	Cuboid cuboid;
@@ -457,4 +600,21 @@ void GeometricPrimitive::DrawPrimitiveCylinder(const DirectX::XMFLOAT3& position
 	cylinder.radius = radius;
 	cylinder.color = color;
 	cylinders.emplace_back(cylinder);
+}
+void GeometricPrimitive::DrawPrimitiveCone(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
+{
+	Cone cone;
+	cone.position = position;
+	cone.height = height;
+	cone.radius = radius;
+	cone.color = color;
+	cones.emplace_back(cone);
+}
+void GeometricPrimitive::DrawPrimitiveSphere(const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color)
+{
+	Sphere sphere;
+	sphere.color = color;
+	sphere.position = position;
+	sphere.radius = radius;
+	spheres.emplace_back(sphere);
 }
