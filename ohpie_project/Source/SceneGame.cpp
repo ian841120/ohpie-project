@@ -2,56 +2,40 @@
 #include "Graphics\Graphics.h"
 #include "Input\InputClass.h"
 #include "Camera.h"
-
+#include "Graphics\Light.h"
 void SceneGame::Initialize()
 {
 	//sprite[0] = std::make_unique<Sprite>(L"./Data/Image/cyberpunk.jpg");
 	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-	
+	directionalLight = std::make_unique<Light>(Light::LIGHTTYPE::Directional);
 }
 void SceneGame::Update(float elapsed_time)
 {
-	//KeyBoardClass& keyBoard = InputClass::Instance().GetKeyBoard();
-	//x += 1*elapsed_time;
-	angle += 1*elapsed_time;
-	//ImGui Update
+	KeyBoardClass& keyBoard = InputClass::Instance().GetKeyBoard();
+	if (keyBoard.GetButtonDown(KeyBoardClass::KBKEY::W))
 	{
-		ImGui::Begin("ImGUI");
-		if (ImGui::TreeNode("Light"))
-		{
-			ImGui::SliderFloat3("Direction", &light.direction.x, -30.0f, 30.0f);
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("Cuboid"))
-		{
-			ImGui::SliderFloat3("Position", &cuboid.position.x, -30.0f, 30.0f);
-			ImGui::ColorEdit4("Color", &cuboid.color.x);
-			ImGui::SliderFloat("Length", &cuboid.length, 1, 30);
-			ImGui::SliderFloat("Height", &cuboid.height, 1, 30);
-			ImGui::SliderFloat("Width", &cuboid.width, 1, 30);
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("Cylinder"))
-		{
-			ImGui::SliderFloat3("Position", &cylinder.position.x, -30.0f, 30.0f);
-			ImGui::ColorEdit4("Color", &cylinder.color.x);
-			ImGui::SliderFloat("Radius", &cylinder.radius, 1, 30);
-			ImGui::SliderFloat("Height", &cylinder.height, 1, 30);
-			ImGui::TreePop();
-		}
+		timer = 1;
 
-		if (ImGui::TreeNode("Sphere"))
-		{
-			ImGui::SliderFloat3("Position", &sphere.position.x, -30.0f, 30.0f);
-			ImGui::ColorEdit4("Color", &sphere.color.x);
-			ImGui::SliderFloat("Radius", &sphere.radius, 1, 30);
-			ImGui::TreePop();
-		}
-
-		ImGui::End();
-		ImGui::Begin("ImGUI2");
-		ImGui::End();
 	}
+	if (timer)
+	{
+		float turnspeed = 90.0f * elapsed_time;
+		cuboid.angle.x += turnspeed;
+		timer -= elapsed_time;
+		if (timer <= 0)
+			timer = 0;
+	}
+	//x += 1*elapsed_time;
+
+	ImGui::Begin("ImGUI");
+
+	DrawDebugUI();
+	directionalLight->DrawDebugUI();
+
+	ImGui::End();
+	ImGui::Begin("ImGUI2");
+	ImGui::End();
+
 }
 void SceneGame::Render()
 {
@@ -67,11 +51,11 @@ void SceneGame::Render()
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	//Render
 	Camera& camera = Camera::Instance();
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCone({ 0.0f,0.0f,0.0f }, 10.0f, 10.0f, {1.0f,1.0f,1.0f,1.0f});
-	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(), light.direction);
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
 
 
 	DrawGrid();
+	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(),directionalLight.get());
 	graphics.GetLineRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 	
 
@@ -91,5 +75,55 @@ void SceneGame::DrawGrid()
 	//Z Axis
 	graphics.GetLineRenderer()->AddVertex({ 0,0,0 }, { 0,0,1,1 });
 	graphics.GetLineRenderer()->AddVertex({ 0,0,75 }, { 0,0,1,1 });
+
+
+	//X Axis 
+	for(auto& cuboid:graphics.GetGeometricPrimitive()->GetCuboid())
+	{
+		graphics.GetLineRenderer()->AddVertex(cuboid.position, { 1,0,0,1 });
+		graphics.GetLineRenderer()->AddVertex({ cuboid.position.x + cuboid.length * 2 ,cuboid.position.y ,cuboid.position.z }, { 1,0,0,1 });
+		//Y Axis
+		graphics.GetLineRenderer()->AddVertex(cuboid.position, { 0,1,0,1 });
+		graphics.GetLineRenderer()->AddVertex({ cuboid.position.x,cuboid.position.y + cuboid.height * 2,cuboid.position.z }, { 0,1,0,1 });
+		//Z Axis
+		graphics.GetLineRenderer()->AddVertex(cuboid.position, { 0,0,1,1 });
+		graphics.GetLineRenderer()->AddVertex({ cuboid.position.x,cuboid.position.y,cuboid.position.z + cuboid.width * 2 }, { 0,0,1,1 });
+
+	}
+
+}
+void SceneGame::DrawDebugUI()
+{
+	//ImGui Update
+	{
+		if (ImGui::TreeNode("Cuboid"))
+		{
+			ImGui::SliderFloat3("Position", &cuboid.position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &cuboid.color.x);
+			ImGui::SliderFloat("Length", &cuboid.length, 1, 30);
+			ImGui::SliderFloat("Height", &cuboid.height, 1, 30);
+			ImGui::SliderFloat("Width", &cuboid.width, 1, 30);
+			ImGui::SliderFloat3("Angle", &cuboid.angle.x, -180.0f, 180.0f);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Cylinder"))
+		{
+			ImGui::SliderFloat3("Position", &cylinder.position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &cylinder.color.x);
+			ImGui::SliderFloat("Radius", &cylinder.radius, 1, 30);
+			ImGui::SliderFloat("Height", &cylinder.height, 1, 30);
+			ImGui::SliderFloat3("Angle", &cylinder.angle.x, -180.0f, 180.0f);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Sphere"))
+		{
+			ImGui::SliderFloat3("Position", &sphere.position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &sphere.color.x);
+			ImGui::SliderFloat("Radius", &sphere.radius, 1, 30);
+			ImGui::TreePop();
+		}
+	}
 
 }

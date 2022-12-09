@@ -322,7 +322,7 @@ void DebugRenderer::CreateHalfSphereMesh(ID3D11Device* device, float radius, int
 	DirectX::XMFLOAT3* p = vertices.get();
 	//Draw Latitude
 	float thetaStep = DirectX::XM_2PI / slices;
-	float phiStep = (DirectX::XM_PI / 2) / stacks;
+	float phiStep = (DirectX::XM_PIDIV2) / stacks;
 	for (int i = 1; i < stacks; i++)
 	{
 

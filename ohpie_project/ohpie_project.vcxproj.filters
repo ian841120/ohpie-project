@@ -54,6 +54,9 @@
     <None Include="HLSL\LineRenderer.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\Light.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\SpritePS.hlsl">
@@ -151,6 +154,9 @@
     <ClInclude Include="Source\Graphics\LineRenderer.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Light.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -217,6 +223,9 @@
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\LineRenderer.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Light.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
