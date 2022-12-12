@@ -8,24 +8,22 @@ void SceneGame::Initialize()
 	//sprite[0] = std::make_unique<Sprite>(L"./Data/Image/cyberpunk.jpg");
 	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
 	directionalLight = std::make_unique<Light>(Light::LIGHTTYPE::Directional);
+	
 }
 void SceneGame::Update(float elapsed_time)
 {
-	KeyBoardClass& keyBoard = InputClass::Instance().GetKeyBoard();
-	if (keyBoard.GetButtonDown(KeyBoardClass::KBKEY::W))
-	{
-		timer = 1;
-
-	}
-	if (timer)
-	{
-		float turnspeed = 90.0f * elapsed_time;
-		cuboid.angle.x += turnspeed;
-		timer -= elapsed_time;
-		if (timer <= 0)
-			timer = 0;
-	}
 	//x += 1*elapsed_time;
+	angle += 0.01f;
+
+
+	earth.position = { sphere.position.x + range * cosf(angle), sphere.position.y, sphere.position.z + range * sinf(angle) };
+	earth.radius = 5;
+	earth.color = white;
+
+
+	moon.position = { earth.position.x + range * cosf(2*angle)*0.5f, earth.position.y, earth.position.z + range * sinf(2*angle)*0.5f };
+	moon.radius = 2;
+	moon.color = white;
 
 	ImGui::Begin("ImGUI");
 
@@ -51,13 +49,18 @@ void SceneGame::Render()
 	dc->OMSetRenderTargets(1, &rtv, dsv);
 	//Render
 	Camera& camera = Camera::Instance();
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
+	graphics.GetSkyBox()->Render(dc, camera.GetEye(), camera.GetView(), camera.GetProjection());
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
 
 
+	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,1.0f,1.0f,1.0f });
+	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
+	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(moon.position, moon.radius, moon.color);
+	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ sphere.position.x + 4*range * cosf(angle) ,sphere.position.y ,sphere.position.z + 4*range * sinf(angle) }, 2, sphere.color);
 	DrawGrid();
 	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(),directionalLight.get());
 	graphics.GetLineRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
-	
 
 }
 void SceneGame::Finalize()

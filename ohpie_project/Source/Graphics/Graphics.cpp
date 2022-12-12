@@ -80,5 +80,6 @@ Graphics::Graphics(HWND hwnd)
 		debugRenderer = std::make_unique<DebugRenderer>(device.Get());
 		geometricPrimitive = std::make_unique<GeometricPrimitive>(device.Get());
 		lineRenderer = std::make_unique<LineRenderer>(device.Get(), 1024);
+		skyBox = std::make_unique<Skybox>(device.Get());
 	}
 }

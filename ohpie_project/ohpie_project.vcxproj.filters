@@ -57,6 +57,9 @@
     <None Include="HLSL\Light.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\Skybox.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\SpritePS.hlsl">
@@ -81,6 +84,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\LineRendererPS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\SkyboxVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\SkyboxPS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
@@ -157,6 +166,12 @@
     <ClInclude Include="Source\Graphics\Light.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Skybox.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="External\DirectXTex\DDSTextureLoader.h">
+      <Filter>External\DirectXTex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -227,6 +242,12 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\Light.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Skybox.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="External\DirectXTex\DDSTextureLoader.cpp">
+      <Filter>External\DirectXTex</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

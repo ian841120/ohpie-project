@@ -5,6 +5,7 @@
 #include "DebugRenderer.h"
 #include "GeometricPrimitive.h"
 #include "LineRenderer.h"
+#include "Skybox.h"
 class Graphics
 {
 public:
@@ -24,6 +25,7 @@ public:
 	DebugRenderer*			GetDebugRenderer() const { return debugRenderer.get(); }
 	GeometricPrimitive*		GetGeometricPrimitive()const { return geometricPrimitive.get(); }
 	LineRenderer*			GetLineRenderer()const { return lineRenderer.get(); }
+	Skybox*					GetSkyBox()const { return skyBox.get(); }
 private:
 	static Graphics*								instance;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -37,6 +39,7 @@ private:
 	std::unique_ptr<DebugRenderer>					debugRenderer;
 	std::unique_ptr<GeometricPrimitive>				geometricPrimitive;
 	std::unique_ptr<LineRenderer>					lineRenderer;
+	std::unique_ptr<Skybox>							skyBox;
 	float screenWidth;
 	float screenHeight;
 };
