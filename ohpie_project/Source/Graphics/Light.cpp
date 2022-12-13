@@ -12,7 +12,6 @@ void Light::DrawDebugGUI()
 		"Point",
 	};
 
-	ImGui::Begin("Light");
 	
 	if (ImGui::TreeNode(lightTypeName[static_cast<int>(lightType)]))
 	{
@@ -20,17 +19,16 @@ void Light::DrawDebugGUI()
 		{
 		case LIGHTTYPE::directional:
 			ImGui::SliderFloat3("Direction", &direction.x, -30.0f, 30.0f);
-			ImGui::ColorEdit4("Direction", &color.x);
+			ImGui::ColorEdit4("Color", &color.x);
 			break;
 		case LIGHTTYPE::point:
-			ImGui::SliderFloat3("Direction", &direction.x, -30.0f, 30.0f);
-			ImGui::ColorEdit4("Direction", &color.x);
+			ImGui::SliderFloat3("Position", &position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &color.x);
 			ImGui::DragFloat("Range", &range, 0.1f, 0, FLT_MAX);
 			break;
 		}
 		ImGui::TreePop();
 	}
-	ImGui::End();
 
 }
 void Light::DrawDebugPrimitive()

@@ -41,7 +41,6 @@ private:
 	};
 	
 private:
-	std::unique_ptr<Light>	directionalLight;
 	Cuboid		cuboid{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},5.0f,5.0f,5.0f };
 	Cylinder	cylinder{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f} ,{0.0f,0.0f,0.0f},5.0f,5.0f };
 	Sphere		sphere{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},5.0f };

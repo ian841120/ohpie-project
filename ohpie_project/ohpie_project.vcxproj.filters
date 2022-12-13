@@ -40,6 +40,9 @@
     <Filter Include="ソース ファイル\Systems">
       <UniqueIdentifier>{a56900bc-9abd-4ae4-9e70-c2c33ebe9742}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Light">
+      <UniqueIdentifier>{04f26ccb-88f0-466e-8dae-c2139168333d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Sprite.hlsli">
@@ -163,20 +166,20 @@
     <ClInclude Include="Source\Graphics\LineRenderer.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Light.h">
-      <Filter>ソース ファイル\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Skybox.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="External\DirectXTex\DDSTextureLoader.h">
       <Filter>External\DirectXTex</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\RenderContext.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\LightManager.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\RenderContext.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Light.h">
+      <Filter>ソース ファイル\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,9 +249,6 @@
     <ClCompile Include="Source\Graphics\LineRenderer.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Light.cpp">
-      <Filter>ソース ファイル\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Skybox.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
@@ -256,7 +256,10 @@
       <Filter>External\DirectXTex</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\LightManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Light.cpp">
+      <Filter>ソース ファイル\Light</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,12 +2,16 @@
 #include "Graphics\Graphics.h"
 #include "Input\InputClass.h"
 #include "Camera.h"
-#include "Graphics\Light.h"
+#include "Graphics\LightManager.h"
 void SceneGame::Initialize()
 {
-	directionalLight = std::make_unique<Light>(Light::LIGHTTYPE::directional);
-	
-	
+	// Directional light
+	LightManager::Instance().Register(new Light(Light::LIGHTTYPE::directional));
+	// Point Light
+	Light* light = new Light(Light::LIGHTTYPE::point);
+	light->SetPosition(sphere.position);
+	light->SetColor(sphere.color);
+	LightManager::Instance().Register(light);
 }
 void SceneGame::Update(float elapsed_time)
 {
@@ -25,9 +29,8 @@ void SceneGame::Update(float elapsed_time)
 	moon.color = white;
 
 	ImGui::Begin("ImGUI");
+	LightManager::Instance().DrawDebugGUI();
 	DrawDebugGUI();
-	directionalLight->DrawDebugGUI();
-
 	ImGui::End();
 
 }
@@ -55,7 +58,7 @@ void SceneGame::Render()
 	rc.viewPosition = { camera.GetEye().x,camera.GetEye().y,camera.GetEye().z,1.0f };
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
-	directionalLight->PushRenderContext(rc);
+	LightManager::Instance().PushRenderContext(rc);
 	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
 	graphics.GetSkyBox()->Render(rc);
 	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
@@ -68,7 +71,8 @@ void SceneGame::Render()
 	DrawGrid();
 	graphics.GetGeometricPrimitive()->Render(rc);
 	graphics.GetLineRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
-
+	LightManager::Instance().DrawDebugPrimitive();
+	graphics.GetDebugRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 }
 void SceneGame::Finalize()
 {
