@@ -2,12 +2,13 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <directxmath.h>
+#include "RenderContext.h"
 class Skybox
 {
 public:
 	Skybox(ID3D11Device* device);
 	~Skybox() {};
-	void Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT3& cameraPosition, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);
+	void Render(const RenderContext& rc);
 private:
 	struct Vertex
 	{
@@ -33,5 +34,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>	sampler_state;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizer_state;
 	Microsoft::WRL::ComPtr<ID3D11BlendState>	blend_state;
+
+
+	
+	UINT sphereIndexCount = 0;
 
 };

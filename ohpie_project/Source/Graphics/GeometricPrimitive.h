@@ -4,13 +4,14 @@
 #include <vector>
 #include <directxmath.h>
 #include "Light.h"
+#include "RenderContext.h"
 class GeometricPrimitive
 {
 public:
 	GeometricPrimitive(ID3D11Device* device);
 	~GeometricPrimitive() {};
 public:
-	void Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& prjection, Light* light);
+	void Render(RenderContext& rc);
 	void DrawPrimitiveCuboid(const DirectX::XMFLOAT3& position, float length, float width, float height, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT4& color);
 	void DrawPrimitiveCylinder(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT4& color);
 	void DrawPrimitiveCone(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
@@ -18,18 +19,12 @@ public:
 	void DrawPrimitiveCapsule(const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 	const auto& GetCuboid(){ return cuboids; }
 private:
-	struct DirectionalLightData
-	{
-		DirectX::XMFLOAT4 direction; // å¸Ç´
-		DirectX::XMFLOAT4 color; // êF
-	};
-
 	struct Cbuffer
 	{
 		DirectX::XMFLOAT4X4 world;
 		DirectX::XMFLOAT4X4	view_project;
 		DirectX::XMFLOAT4	color;
-		DirectionalLightData directionalLightData;
+		DirectionLightData directionalLightData;
 	};
 	struct Vertex
 	{

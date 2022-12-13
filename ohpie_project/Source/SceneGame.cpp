@@ -5,9 +5,8 @@
 #include "Graphics\Light.h"
 void SceneGame::Initialize()
 {
-	//sprite[0] = std::make_unique<Sprite>(L"./Data/Image/cyberpunk.jpg");
-	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-	directionalLight = std::make_unique<Light>(Light::LIGHTTYPE::Directional);
+	directionalLight = std::make_unique<Light>(Light::LIGHTTYPE::directional);
+	
 	
 }
 void SceneGame::Update(float elapsed_time)
@@ -26,40 +25,48 @@ void SceneGame::Update(float elapsed_time)
 	moon.color = white;
 
 	ImGui::Begin("ImGUI");
+	DrawDebugGUI();
+	directionalLight->DrawDebugGUI();
 
-	DrawDebugUI();
-	directionalLight->DrawDebugUI();
-
-	ImGui::End();
-	ImGui::Begin("ImGUI2");
 	ImGui::End();
 
 }
 void SceneGame::Render()
 {
 	Graphics& graphics = Graphics::GetInstance();
+
 	//Get Device context
+
 	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
 	ID3D11RenderTargetView* rtv = graphics.GetRenderTargetView();
 	ID3D11DepthStencilView* dsv = graphics.GetDepthStencilView();
+
 	//Screen clear and set render target view
 	FLOAT color[] = { 0.2f, 0.2f, 0.2f, 0.0f };	// RGBA(0.0`1.0)
 	dc->ClearRenderTargetView(rtv, color);
 	dc->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	dc->OMSetRenderTargets(1, &rtv, dsv);
+
 	//Render
 	Camera& camera = Camera::Instance();
+	
+	RenderContext rc;
+	rc.deviceContext = dc;
+	rc.viewPosition = { camera.GetEye().x,camera.GetEye().y,camera.GetEye().z,1.0f };
+	rc.view = camera.GetView();
+	rc.projection = camera.GetProjection();
+	directionalLight->PushRenderContext(rc);
 	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
-	graphics.GetSkyBox()->Render(dc, camera.GetEye(), camera.GetView(), camera.GetProjection());
+	graphics.GetSkyBox()->Render(rc);
 	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
 
 
-	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,1.0f,1.0f,1.0f });
+	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(moon.position, moon.radius, moon.color);
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ sphere.position.x + 4*range * cosf(angle) ,sphere.position.y ,sphere.position.z + 4*range * sinf(angle) }, 2, sphere.color);
 	DrawGrid();
-	graphics.GetGeometricPrimitive()->Render(dc, camera.GetView(), camera.GetProjection(),directionalLight.get());
+	graphics.GetGeometricPrimitive()->Render(rc);
 	graphics.GetLineRenderer()->Render(dc, camera.GetView(), camera.GetProjection());
 
 }
@@ -95,7 +102,7 @@ void SceneGame::DrawGrid()
 	}
 
 }
-void SceneGame::DrawDebugUI()
+void SceneGame::DrawDebugGUI()
 {
 	//ImGui Update
 	{

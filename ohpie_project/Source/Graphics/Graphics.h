@@ -6,6 +6,7 @@
 #include "GeometricPrimitive.h"
 #include "LineRenderer.h"
 #include "Skybox.h"
+#include "RenderContext.h"
 class Graphics
 {
 public:

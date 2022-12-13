@@ -106,35 +106,35 @@ GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 	}
 
 }
-void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection, Light* light)
+void GeometricPrimitive::Render(RenderContext& rc)
 {
 	// Set shader
-	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
-	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
-	device_context->IASetInputLayout(input_layout.Get());
+	rc.deviceContext->VSSetShader(vertex_shader.Get(), nullptr, 0);
+	rc.deviceContext->PSSetShader(pixel_shader.Get(), nullptr, 0);
+	rc.deviceContext->IASetInputLayout(input_layout.Get());
 
 	// Set constant buffer
-	device_context->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
-	device_context->PSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
+	rc.deviceContext->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
+	rc.deviceContext->PSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
 
 	// Set render target view
 	const float blenderFactor[4] = { 1.0f,1.0f,1.0f,1.0f };
-	device_context->OMSetBlendState(blend_state.Get(), blenderFactor, 0XFFFFFFFF);
-	device_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-	device_context->RSSetState(rasterizer_state.Get());
+	rc.deviceContext->OMSetBlendState(blend_state.Get(), blenderFactor, 0XFFFFFFFF);
+	rc.deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+	rc.deviceContext->RSSetState(rasterizer_state.Get());
 
 	// Create view projection matrix;
-	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&view);
-	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&projection);
+	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&rc.view);
+	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&rc.projection);
 	DirectX::XMMATRIX VP = V * P;
 	// Set Primitive
 	UINT stride{ sizeof(Vertex) };
 	UINT offset{ 0 };
-	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	rc.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//Draw cubiod
-	device_context->IASetVertexBuffers(0, 1, cuboid_vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetIndexBuffer(cuboid_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	rc.deviceContext->IASetVertexBuffers(0, 1, cuboid_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetIndexBuffer(cuboid_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	for(const Cuboid& cuboid:cuboids)
 	{
@@ -145,18 +145,17 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		cbuffer.directionalLightData.direction = light->GetDirection();
-		cbuffer.directionalLightData.color = light->GetColor();
+		cbuffer.directionalLightData = rc.directionLightData;
 		cbuffer.color = cuboid.color;
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(cuboidIndexCount, 0,0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(cuboidIndexCount, 0,0);
 
 	}
 	cuboids.clear();
 	//Draw cylinder
 
-	device_context->IASetVertexBuffers(0, 1, cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetIndexBuffer(cylinder_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	rc.deviceContext->IASetVertexBuffers(0, 1, cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetIndexBuffer(cylinder_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	for (const Cylinder& cylinder : cylinders)
 	{
@@ -168,17 +167,16 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		cbuffer.directionalLightData.direction = light->GetDirection();
-		cbuffer.directionalLightData.color = light->GetColor();		
+		cbuffer.directionalLightData = rc.directionLightData;
 		cbuffer.color = cylinder.color;
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(cylinderIndexCount, 0, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(cylinderIndexCount, 0, 0);
 
 	}
 	cylinders.clear();
 	// Draw Corn 
-	device_context->IASetVertexBuffers(0, 1, cone_vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetIndexBuffer(cone_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	rc.deviceContext->IASetVertexBuffers(0, 1, cone_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetIndexBuffer(cone_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	for (const Cone& cone : cones)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(cone.radius, cone.height, cone.radius);
@@ -187,17 +185,16 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		cbuffer.directionalLightData.direction = light->GetDirection();
-		cbuffer.directionalLightData.color = light->GetColor();		
+		cbuffer.directionalLightData = rc.directionLightData;
 		cbuffer.color = cone.color;
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(coneIndexCount, 0, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(coneIndexCount, 0, 0);
 
 	}
 	cones.clear();
 	//Draw sphere
-	device_context->IASetVertexBuffers(0, 1, sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetIndexBuffer(sphere_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	rc.deviceContext->IASetVertexBuffers(0, 1, sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetIndexBuffer(sphere_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	for (const Sphere& sphere : spheres)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(sphere.radius, sphere.radius, sphere.radius);
@@ -206,17 +203,16 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		cbuffer.directionalLightData.direction = light->GetDirection();
-		cbuffer.directionalLightData.color = light->GetColor();		
+		cbuffer.directionalLightData = rc.directionLightData;
 		cbuffer.color = sphere.color;
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(sphereIndexCount, 0, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(sphereIndexCount, 0, 0);
 
 	}
 	spheres.clear();
 	//Draw capsule
-	device_context->IASetVertexBuffers(0, 1, half_sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetIndexBuffer(half_sphere_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	rc.deviceContext->IASetVertexBuffers(0, 1, half_sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetIndexBuffer(half_sphere_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	for (const Capsule& capsule : capsules)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(capsule.radius, capsule.radius, capsule.radius);
@@ -225,21 +221,20 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		cbuffer.directionalLightData.direction = light->GetDirection();
-		cbuffer.directionalLightData.color = light->GetColor();		
+		cbuffer.directionalLightData = rc.directionLightData;
 		cbuffer.color = capsule.color;
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(halfSphereIndexCount, 0, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(halfSphereIndexCount, 0, 0);
 		T = DirectX::XMMatrixTranslation(capsule.position.x, capsule.position.y, capsule.position.z);
 		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, 0.0f);
 		W = S * R * T;
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(halfSphereIndexCount, 0, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(halfSphereIndexCount, 0, 0);
 	}
 
-	device_context->IASetVertexBuffers(0, 1, side_cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetIndexBuffer(side_cylinder_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	rc.deviceContext->IASetVertexBuffers(0, 1, side_cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetIndexBuffer(side_cylinder_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	for (const Capsule& capsule : capsules)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(capsule.radius, capsule.height, capsule.radius);
@@ -248,11 +243,10 @@ void GeometricPrimitive::Render(ID3D11DeviceContext* device_context, const Direc
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
-		cbuffer.directionalLightData.direction = light->GetDirection();
-		cbuffer.directionalLightData.color = light->GetColor();		
+		cbuffer.directionalLightData = rc.directionLightData;
 		cbuffer.color = capsule.color;
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
-		device_context->DrawIndexed(sideCylinderIndexCount, 0, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+		rc.deviceContext->DrawIndexed(sideCylinderIndexCount, 0, 0);
 	}
 	capsules.clear();
 

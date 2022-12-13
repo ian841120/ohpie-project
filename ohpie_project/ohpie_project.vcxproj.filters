@@ -172,6 +172,12 @@
     <ClInclude Include="External\DirectXTex\DDSTextureLoader.h">
       <Filter>External\DirectXTex</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\RenderContext.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\LightManager.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -248,6 +254,9 @@
     </ClCompile>
     <ClCompile Include="External\DirectXTex\DDSTextureLoader.cpp">
       <Filter>External\DirectXTex</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\LightManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

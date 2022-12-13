@@ -6,6 +6,6 @@ struct DirectionalLightData
 
 float3 CalcLambertDiffuse(float3 normal,float3 lightVector,float3 lightColor,float3 kd)
 {
-    float d = max(0, dot(-lightVector, normal));
+    float d = dot(-lightVector, normal) * 0.5 + 0.5;
     return d * lightColor * kd;
 }

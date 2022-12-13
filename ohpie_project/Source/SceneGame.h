@@ -13,7 +13,7 @@ public:
 	void Render();
 private:
 	void DrawGrid();
-	void DrawDebugUI();
+	void DrawDebugGUI();
 private:
 	std::unique_ptr<Sprite> sprite[2];
 	struct Cuboid
