@@ -58,7 +58,7 @@ void SceneGame::Render()
 	directionalLight->PushRenderContext(rc);
 	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
 	graphics.GetSkyBox()->Render(rc);
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
 
 
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });

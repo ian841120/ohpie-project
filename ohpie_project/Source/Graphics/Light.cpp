@@ -1,19 +1,49 @@
 #include "Light.h"
 #include "ImguiClass.h"
+#include "Graphics.h"
 Light::Light(LIGHTTYPE lightType):lightType(lightType)
 {
 }
 void Light::DrawDebugGUI()
 {
-	ImGui::Begin("Light");
-	if (ImGui::TreeNode("Directtion Light"))
+	static constexpr char* lightTypeName[] =
 	{
-		ImGui::SliderFloat3("Direction", &direction.x, -30.0f, 30.0f);
-		ImGui::ColorEdit4("Direction", &color.x);
+		"Directional",
+		"Point",
+	};
+
+	ImGui::Begin("Light");
+	
+	if (ImGui::TreeNode(lightTypeName[static_cast<int>(lightType)]))
+	{
+		switch (lightType)
+		{
+		case LIGHTTYPE::directional:
+			ImGui::SliderFloat3("Direction", &direction.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Direction", &color.x);
+			break;
+		case LIGHTTYPE::point:
+			ImGui::SliderFloat3("Direction", &direction.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Direction", &color.x);
+			ImGui::DragFloat("Range", &range, 0.1f, 0, FLT_MAX);
+			break;
+		}
 		ImGui::TreePop();
 	}
 	ImGui::End();
 
+}
+void Light::DrawDebugPrimitive()
+{
+	DebugRenderer* debugRenderer = Graphics::GetInstance().GetDebugRenderer();
+	switch (lightType)
+	{
+	case LIGHTTYPE::directional:
+		break;
+	case LIGHTTYPE::point:
+		debugRenderer->DrawSphere(position, range, color);
+		break;
+	}
 }
 void Light::PushRenderContext(RenderContext& rc)const
 {
