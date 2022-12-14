@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="HLSL\DebugRenderer.hlsli" />
+    <None Include="HLSL\Fog.hlsli" />
     <None Include="HLSL\GeometricPrimitive.hlsli" />
     <None Include="HLSL\Light.hlsli" />
     <None Include="HLSL\LineRenderer.hlsli" />
@@ -256,6 +257,7 @@
     <ClInclude Include="Source\CpuTimer.h" />
     <ClInclude Include="Source\Framework.h" />
     <ClInclude Include="Source\Graphics\DebugRenderer.h" />
+    <ClInclude Include="Source\Graphics\Fog.h" />
     <ClInclude Include="Source\Graphics\GeometricPrimitive.h" />
     <ClInclude Include="Source\Graphics\Graphics.h" />
     <ClInclude Include="Source\Graphics\ImguiClass.h" />
@@ -286,6 +288,7 @@
     <ClCompile Include="Source\CpuTimer.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\Graphics\DebugRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\Fog.cpp" />
     <ClCompile Include="Source\Graphics\GeometricPrimitive.cpp" />
     <ClCompile Include="Source\Graphics\Graphics.cpp" />
     <ClCompile Include="Source\Graphics\ImGuiClass.cpp" />

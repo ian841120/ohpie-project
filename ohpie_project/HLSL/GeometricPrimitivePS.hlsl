@@ -1,6 +1,8 @@
 #include "GeometricPrimitive.hlsli"
 float4 main(VS_OUT pin) : SV_TARGET
 {
+    float3 toEye = viewPosition.xyz - pin.world_position.xyz;
+    float distToEye = length(toEye);
     float3 N = normalize(pin.normal);
     float3 L = normalize(directionalLightData.direction.xyz);
     float3 kd = float3(1, 1, 1);
@@ -19,7 +21,15 @@ float4 main(VS_OUT pin) : SV_TARGET
         pointDiffuse += CalcLambertDiffuse(N, lightVector, pointLightData[i].color.rgb, kd) * attenuate;
 
     }
+
     float4 color = pin.color;
     color.rgb *= (directionalDiffuse + pointDiffuse);
+
+    //Fog
+    {
+        float fogLerp = saturate((distToEye - fogData.fogStart) / fogData.fogRange);
+        color.rgb = lerp(color.rgb, fogData.fogColor, fogLerp);
+    }
+
     return color;
 }

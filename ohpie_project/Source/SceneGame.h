@@ -2,6 +2,7 @@
 #include "Graphics\Sprite.h"
 #include <memory>
 #include "Graphics\Light.h"
+#include "Graphics\Fog.h"
 class SceneGame
 {
 public:
@@ -41,12 +42,14 @@ private:
 	};
 	
 private:
+	std::unique_ptr<Fog>	fog;
 	Cuboid		cuboid{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},5.0f,5.0f,5.0f };
 	Cylinder	cylinder{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f} ,{0.0f,0.0f,0.0f},5.0f,5.0f };
 	Sphere		sphere{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},5.0f };
 	Sphere		earth{};
 	Sphere		moon{};
 	DirectX::XMFLOAT4 white{ 1.0f,1.0f,1.0f,1.0f };
+	
 	float timer = 0;
 	float angle = 0;
 	float range = 50;

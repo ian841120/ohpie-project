@@ -146,6 +146,8 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
 		cbuffer.directionalLightData = rc.directionLightData;
+		cbuffer.viewPosition = rc.viewPosition;
+		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
 		cbuffer.color = cuboid.color;
@@ -170,6 +172,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
 		cbuffer.directionalLightData = rc.directionLightData;
+		cbuffer.viewPosition = rc.viewPosition;
+
+		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
 		cbuffer.color = cylinder.color;
@@ -189,7 +194,10 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
+		cbuffer.viewPosition = rc.viewPosition;
+
 		cbuffer.directionalLightData = rc.directionLightData;
+		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
 		cbuffer.color = cone.color;
@@ -210,6 +218,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
 		cbuffer.directionalLightData = rc.directionLightData;
+		cbuffer.viewPosition = rc.viewPosition;
+
+		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
 		cbuffer.color = sphere.color;
@@ -230,6 +241,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
 		cbuffer.directionalLightData = rc.directionLightData;
+		cbuffer.viewPosition = rc.viewPosition;
+
+		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
 		cbuffer.color = capsule.color;
@@ -253,7 +267,10 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		Cbuffer cbuffer;
 		DirectX::XMStoreFloat4x4(&cbuffer.view_project, VP);
 		DirectX::XMStoreFloat4x4(&cbuffer.world, W);
+		cbuffer.fogData = rc.fogData;
 		cbuffer.directionalLightData = rc.directionLightData;
+		cbuffer.viewPosition = rc.viewPosition;
+
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
 		cbuffer.color = capsule.color;

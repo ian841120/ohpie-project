@@ -1,6 +1,13 @@
 #pragma once
 #include <d3d11.h>
 #include <directxmath.h>
+struct FogData
+{
+	DirectX::XMFLOAT4	color;
+	float				fogStart;
+	float				fogRange;
+	DirectX::XMFLOAT2	padding;
+};
 struct DirectionLightData
 {
 	DirectX::XMFLOAT4 direction;
@@ -28,6 +35,7 @@ struct RenderContext
 	DirectionLightData		directionLightData;
 	PointLightData			pointLightData[PointLightMax];
 	int						pointLightCount = 0;
-
+	//Fog
+	FogData					fogData;
 	
 };

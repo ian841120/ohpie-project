@@ -63,6 +63,9 @@
     <None Include="HLSL\Skybox.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\Fog.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\SpritePS.hlsl">
@@ -181,11 +184,14 @@
     <ClInclude Include="Source\Graphics\Light.h">
       <Filter>ソース ファイル\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Shader.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\RenderStates.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Shader.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Fog.h">
+      <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -240,9 +246,6 @@
     <ClCompile Include="Source\Framework.cpp">
       <Filter>ソース ファイル\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Source\main.cpp">
-      <Filter>ソース ファイル\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SceneGame.cpp">
       <Filter>ソース ファイル\Scenes</Filter>
     </ClCompile>
@@ -268,7 +271,13 @@
       <Filter>ソース ファイル\Light</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\RenderStates.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>ソース ファイル\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Fog.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

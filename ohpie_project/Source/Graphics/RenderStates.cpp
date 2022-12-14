@@ -158,6 +158,7 @@ RenderStates::RenderStates(ID3D11Device* device)
 	hr = device->CreateSamplerState(&sampler_desc, samplerStates[static_cast<int>(SS::ANISOTROPIC_SAMPLER_STATE)].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), L"Create sampler state failed");
 	}
+
 	// Create Depth states
 	{
 		D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{};
@@ -183,6 +184,7 @@ RenderStates::RenderStates(ID3D11Device* device)
 		hr = device->CreateDepthStencilState(&depth_stencil_desc, depthStencilStates[static_cast<int>(DSS::ZT_OFF_ZW_OFF)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create depth stencil failed");
 	}
+
 	//Create rasterizer state
 	{
 		D3D11_RASTERIZER_DESC rasterize_desc{};

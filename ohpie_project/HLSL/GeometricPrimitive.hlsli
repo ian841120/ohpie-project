@@ -1,4 +1,5 @@
 #include "Light.hlsli"
+#include "Fog.hlsli"
 struct VS_OUT
 {
     float4 position : SV_POSITION;
@@ -8,6 +9,7 @@ struct VS_OUT
 };
 cbuffer Cbuffer : register(b0)
 {
+    float4                  viewPosition;
     row_major float4x4      world;
     row_major float4x4      view_projection;
     float4                  color;
@@ -15,5 +17,5 @@ cbuffer Cbuffer : register(b0)
     PointLightData          pointLightData[pointLightMax];
     int                     pointLightCount;
     float3                  dummy;
-
+    FogData                 fogData;
 }

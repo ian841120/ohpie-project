@@ -7,6 +7,8 @@ void SceneGame::Initialize()
 {
 	sprite[0] = std::make_unique<Sprite>(L"./Data/Image/Cyberpunk.jpg");
 	sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
+	//Fog
+	fog = std::make_unique<Fog>();
 	// Directional light
 	LightManager::Instance().Register(new Light(Light::LIGHTTYPE::directional));
 	// Point Light
@@ -18,7 +20,7 @@ void SceneGame::Initialize()
 void SceneGame::Update(float elapsed_time)
 {
 	//x += 1*elapsed_time;
-	//angle += 0.01f;
+	angle += 0.01f;
 
 
 	earth.position = { sphere.position.x + range * cosf(angle), sphere.position.y, sphere.position.z + range * sinf(angle) };
@@ -34,7 +36,7 @@ void SceneGame::Update(float elapsed_time)
 	LightManager::Instance().DrawDebugGUI();
 	DrawDebugGUI();
 	ImGui::End();
-
+	fog->DrawDebugGui();
 }
 void SceneGame::Render()
 {
@@ -61,6 +63,7 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 	LightManager::Instance().PushRenderContext(rc);
+	fog->pushRenderContext(rc);
 	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
 	graphics.GetSkyBox()->Render(rc);
 	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });

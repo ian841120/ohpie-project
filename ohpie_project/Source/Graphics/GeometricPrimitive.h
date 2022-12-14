@@ -21,6 +21,7 @@ public:
 private:
 	struct Cbuffer
 	{
+		DirectX::XMFLOAT4	viewPosition;
 		DirectX::XMFLOAT4X4 world;
 		DirectX::XMFLOAT4X4	view_project;
 		DirectX::XMFLOAT4	color;
@@ -28,6 +29,7 @@ private:
 		PointLightData		pointLightData[PointLightMax];
 		int pointLightCount;
 		DirectX::XMFLOAT3	dummy;
+		FogData				fogData;
 	};
 	struct Vertex
 	{
