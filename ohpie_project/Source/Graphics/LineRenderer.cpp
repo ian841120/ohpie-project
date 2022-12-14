@@ -108,45 +108,45 @@ LineRenderer::LineRenderer(ID3D11Device* device,UINT VertexCount):MaxVertexCount
 
 	}
 }
-void LineRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection)
+void LineRenderer::Render(RenderContext&rc)
 {
 	//Set shader and input layout
-	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
-	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
-	device_context->IASetInputLayout(input_layout.Get());
+	rc.deviceContext->VSSetShader(vertex_shader.Get(), nullptr, 0);
+	rc.deviceContext->PSSetShader(pixel_shader.Get(), nullptr, 0);
+	rc.deviceContext->IASetInputLayout(input_layout.Get());
 
 	//Set constantbuffer
-	device_context->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
+	rc.deviceContext->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
 	//Set render target view
 	float blendFactor[4] = { 1.0f,1.0f,1.0f,1.0f };
-	device_context->OMSetBlendState(blend_state.Get(), blendFactor, 0xFFFFFFFF);
-	device_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-	device_context->RSSetState(rasterizer_state.Get());
+	rc.deviceContext->OMSetBlendState(blend_state.Get(), blendFactor, 0xFFFFFFFF);
+	rc.deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+	rc.deviceContext->RSSetState(rasterizer_state.Get());
 	// Update constant buffer
-	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&view);
-	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&projection);
+	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&rc.view);
+	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&rc.projection);
 	DirectX::XMMATRIX VP = V * P;
 	Cbuffer cbuffer;
 	DirectX::XMStoreFloat4x4(&cbuffer.world_view_projection, VP);
-	device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
+	rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
 	UINT stride{ sizeof(Vertex) };
 	UINT offset{ 0 };
-	device_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	rc.deviceContext->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	// Draw Vertices
 	UINT totalVertexCount = static_cast<UINT>(vertices.size());
 	UINT start = 0;
 	UINT count = (totalVertexCount < MaxVertexCount) ? totalVertexCount : MaxVertexCount;
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
-	HRESULT hr = device_context->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
+	HRESULT hr = rc.deviceContext->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
 	_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to Mapping");
 
 	while (start < totalVertexCount)
 	{
 
 		memcpy(mapped_subresource.pData, &vertices[start], sizeof(Vertex) * count);
-		device_context->Unmap(vertex_buffer.Get(),0);
-		device_context->Draw(count, 0);
+		rc.deviceContext->Unmap(vertex_buffer.Get(),0);
+		rc.deviceContext->Draw(count, 0);
 		start += count;
 		if (start + count > totalVertexCount)
 		{

@@ -57,10 +57,10 @@ void Light::PushRenderContext(RenderContext& rc)const
 	case LIGHTTYPE::point:
 		if (rc.pointLightCount >= PointLightMax)
 			break;
-		rc.pointLightData[rc.pointLightCount].direction.x = direction.x;
-		rc.pointLightData[rc.pointLightCount].direction.y = direction.y;
-		rc.pointLightData[rc.pointLightCount].direction.z = direction.z;
-		rc.pointLightData[rc.pointLightCount].direction.w = 0.0f;
+		rc.pointLightData[rc.pointLightCount].position.x = position.x;
+		rc.pointLightData[rc.pointLightCount].position.y = position.y;
+		rc.pointLightData[rc.pointLightCount].position.z = position.z;
+		rc.pointLightData[rc.pointLightCount].position.w = 0.0f;
 		rc.pointLightData[rc.pointLightCount].range = range;
 		rc.pointLightData[rc.pointLightCount].color = color;
 		rc.pointLightCount++;

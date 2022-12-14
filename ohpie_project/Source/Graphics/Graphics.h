@@ -7,6 +7,7 @@
 #include "LineRenderer.h"
 #include "Skybox.h"
 #include "RenderContext.h"
+#include "RenderStates.h"
 class Graphics
 {
 public:
@@ -41,6 +42,7 @@ private:
 	std::unique_ptr<GeometricPrimitive>				geometricPrimitive;
 	std::unique_ptr<LineRenderer>					lineRenderer;
 	std::unique_ptr<Skybox>							skyBox;
+	std::unique_ptr<RenderStates>					renderStates;
 	float screenWidth;
 	float screenHeight;
 };

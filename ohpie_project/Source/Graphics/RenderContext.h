@@ -8,9 +8,10 @@ struct DirectionLightData
 };
 struct PointLightData
 {
-	DirectX::XMFLOAT4	direction;
+	DirectX::XMFLOAT4	position;
 	DirectX::XMFLOAT4	color;
 	float				range;
+	DirectX::XMFLOAT3	dummy;
 };
 static constexpr int PointLightMax = 8;
 

@@ -103,29 +103,29 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 	CreateCylinderMesh(device,1.0f, 1.0f, 0.0f, 1.0f, 12, 1);
 	CreateCapsuleMesh(device, 1, 1, 12, 12);
 }
-void DebugRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection)
+void DebugRenderer::Render(RenderContext& rc)
 {
 	// Set shader
-	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
-	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
-	device_context->IASetInputLayout(input_layout.Get());
+	rc.deviceContext->VSSetShader(vertex_shader.Get(), nullptr, 0);
+	rc.deviceContext->PSSetShader(pixel_shader.Get(), nullptr, 0);
+	rc.deviceContext->IASetInputLayout(input_layout.Get());
 	// Set constant buffer
-	device_context->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
+	rc.deviceContext->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
 	// Set render target view
 	const float blenderFactor[4] = { 1.0f,1.0f,1.0f,1.0f };
-	device_context->OMSetBlendState(blend_state.Get(), blenderFactor, 0XFFFFFFFF);
-	device_context->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-	device_context->RSSetState(rasterizer_state.Get());
+	rc.deviceContext->OMSetBlendState(blend_state.Get(), blenderFactor, 0XFFFFFFFF);
+	rc.deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+	rc.deviceContext->RSSetState(rasterizer_state.Get());
 	// Create view projection matrix
-	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&view);
-	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&projection);
+	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&rc.view);
+	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&rc.projection);
 	DirectX::XMMATRIX VP = V * P;
 	// Set primitive
 	UINT stride{ sizeof(DirectX::XMFLOAT3) };
 	UINT offset{ 0 };
-	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	rc.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	// Draw cylinder
-	device_context->IASetVertexBuffers(0, 1, cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetVertexBuffers(0, 1, cylinder_vertex_buffer.GetAddressOf(), &stride, &offset);
 	for (const Cylinder& cylinder : cylinders)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(cylinder.radius, cylinder.height, cylinder.radius);
@@ -136,12 +136,12 @@ void DebugRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::X
 		cbMesh.color = cylinder.color;
 		DirectX::XMStoreFloat4x4(&cbMesh.world_view_project, WVP);
 
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbMesh, 0, 0);
-		device_context->Draw(cylinderVertexCount, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbMesh, 0, 0);
+		rc.deviceContext->Draw(cylinderVertexCount, 0);
 	}
 	cylinders.clear();
 	//Draw sphere
-	device_context->IASetVertexBuffers(0, 1, sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetVertexBuffers(0, 1, sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
 	for (const Sphere& sphere : spheres)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(sphere.radius, sphere.radius, sphere.radius);
@@ -151,12 +151,12 @@ void DebugRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::X
 		CbMesh cbmesh;
 		cbmesh.color = sphere.color;
 		DirectX::XMStoreFloat4x4(&cbmesh.world_view_project, WVP);
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
-		device_context->Draw(sphereVertexCount, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
+		rc.deviceContext->Draw(sphereVertexCount, 0);
 	}
 	spheres.clear();
 	//Draw capsule (two half sphere and one cylinder)
-	device_context->IASetVertexBuffers(0, 1, half_sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
+	rc.deviceContext->IASetVertexBuffers(0, 1, half_sphere_vertex_buffer.GetAddressOf(), &stride, &offset);
 	for (const Capsule& capsule : capsules)
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(capsule.radius, capsule.radius, capsule.radius);
@@ -168,16 +168,16 @@ void DebugRenderer::Render(ID3D11DeviceContext* device_context, const DirectX::X
 		CbMesh cbmesh;
 		cbmesh.color = capsule.color;
 		DirectX::XMStoreFloat4x4(&cbmesh.world_view_project, WVP);
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
-		device_context->Draw(halfSphereVertexCount, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
+		rc.deviceContext ->Draw(halfSphereVertexCount, 0);
 
 		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XM_PI, 0.0f, 0.0f);
 		T = DirectX::XMMatrixTranslation(capsule.position.x, capsule.position.y, capsule.position.z);
 		W = S * R * T;
 		WVP = W * VP;
 		DirectX::XMStoreFloat4x4(&cbmesh.world_view_project, WVP);
-		device_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
-		device_context->Draw(halfSphereVertexCount, 0);
+		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbmesh, 0, 0);
+		rc.deviceContext->Draw(halfSphereVertexCount, 0);
 
 	}
 	capsules.clear();

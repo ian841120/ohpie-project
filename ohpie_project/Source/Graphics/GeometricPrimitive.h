@@ -25,6 +25,9 @@ private:
 		DirectX::XMFLOAT4X4	view_project;
 		DirectX::XMFLOAT4	color;
 		DirectionLightData directionalLightData;
+		PointLightData		pointLightData[PointLightMax];
+		int pointLightCount;
+		DirectX::XMFLOAT3	dummy;
 	};
 	struct Vertex
 	{

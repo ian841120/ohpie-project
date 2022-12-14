@@ -181,6 +181,12 @@
     <ClInclude Include="Source\Graphics\Light.h">
       <Filter>ソース ファイル\Light</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Shader.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\RenderStates.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -260,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\Light.cpp">
       <Filter>ソース ファイル\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\RenderStates.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

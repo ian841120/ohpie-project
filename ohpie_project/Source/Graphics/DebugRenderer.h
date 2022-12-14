@@ -3,6 +3,7 @@
 #include <directxmath.h>
 #include <wrl.h>
 #include <vector>
+#include "RenderContext.h"
 class DebugRenderer
 {
 public:
@@ -10,7 +11,7 @@ public:
 	~DebugRenderer() {};
 public:
 	//Render
-	void Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);
+	void Render(RenderContext& rc);
 	//Draw sphere
 	void DrawSphere(const DirectX::XMFLOAT3& center, float radius, const DirectX::XMFLOAT4& color);
 	//Draw cylinder

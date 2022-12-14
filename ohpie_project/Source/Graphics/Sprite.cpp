@@ -127,209 +127,18 @@ Sprite::Sprite(const wchar_t* filename)
 
 		texture2d->GetDesc(&texture2d_desc);
 	}
-	//Create Sampler states
-	{
-		D3D11_SAMPLER_DESC sampler_desc{};
-		sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampler_desc.MipLODBias = 0;
-		sampler_desc.MaxAnisotropy = 16;
-		sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		sampler_desc.BorderColor[0] = 0;
-		sampler_desc.BorderColor[1] = 0;
-		sampler_desc.BorderColor[2] = 0;
-		sampler_desc.BorderColor[3] = 0;
-		sampler_desc.MinLOD = 0;
-		sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
-		// POINT
-		sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<int>(SAMPLER_STATE::POINT_SAMPLER_STATE)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create sampler state failed");
-		//LINEAR
-		sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<int>(SAMPLER_STATE::LINEAR_SAMPLER_STATE)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create sampler state failed");
-		//ANISOTROPIC
-		sampler_desc.Filter = D3D11_FILTER_ANISOTROPIC;
-		hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<int>(SAMPLER_STATE::ANISOTROPIC_SAMPLER_STATE)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create sampler state failed");
-	}
-	// Create Depth states
-	{
-		D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{};
-		depth_stencil_desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-		//ZT_ON_ZW_ON
-		depth_stencil_desc.DepthEnable = TRUE;
-		depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		hr = device->CreateDepthStencilState(&depth_stencil_desc, depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::ZT_ON_ZW_ON)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create depth stencil failed");
-		//ZT_ON_ZW_OFF
-		depth_stencil_desc.DepthEnable = TRUE;
-		depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		hr = device->CreateDepthStencilState(&depth_stencil_desc, depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::ZT_ON_ZW_OFF)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create depth stencil failed");
-		//ZT_OFF_ZW_ON
-		depth_stencil_desc.DepthEnable = FALSE;
-		depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		hr = device->CreateDepthStencilState(&depth_stencil_desc, depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::ZT_OFF_ZW_ON)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create depth stencil failed");
-		//ZT_OFF_ZW_OFF
-		depth_stencil_desc.DepthEnable = FALSE;
-		depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		hr = device->CreateDepthStencilState(&depth_stencil_desc, depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::ZT_OFF_ZW_OFF)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create depth stencil failed");
-	}
-	//Create blender states
-	{
-		D3D11_BLEND_DESC blendDesc = {};
-		//  NONE
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = FALSE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::NONE)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr),L"Create blender state failed");
-		//  ALPHA
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::ALPHA)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//  ADD
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; 
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::ADD)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//  SUBTRACT
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ZERO; 
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_COLOR; 
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; 
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::SUBTRACT)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//	REPLACE
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::REPLACE)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//	MULTIPLY
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ZERO; 
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_SRC_COLOR; 
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_DEST_ALPHA;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::MULTIPLY)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//	LIGHTEN
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_MAX;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_MAX;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::LIGHTEN)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//	DARKEN
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_MIN;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_MIN;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::DARKEN)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-		//	SCREEN
-		blendDesc.AlphaToCoverageEnable = FALSE;
-		blendDesc.IndependentBlendEnable = FALSE;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; 
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_COLOR; 
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		hr = device->CreateBlendState(&blendDesc, blender_states[static_cast<int>(BLENDER_STATE::SCREEN)].GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create blender state failed");
-	}
-	//Create rasterizer state
-	{
-		D3D11_RASTERIZER_DESC desc{};
-		desc.FrontCounterClockwise = true;
-		desc.DepthBias = 0;
-		desc.DepthBiasClamp = 0;
-		desc.SlopeScaledDepthBias = 0;
-		desc.DepthClipEnable = true;
-		desc.ScissorEnable = false;
-		desc.MultisampleEnable = true;
-		desc.FillMode = D3D11_FILL_SOLID;
-		desc.CullMode = D3D11_CULL_NONE;
-		desc.AntialiasedLineEnable = false;
-		hr = device->CreateRasterizerState(&desc, rasterizer_state.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create rasterizer state failed");
-
-	}
 
 }
-void Sprite::render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh)
+void Sprite::Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh)
 {
-	render(device_context, dx, dy, dw, dh, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
+	Render(device_context, dx, dy, dw, dh, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
 }
-void Sprite::render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh, float r, float g, float b, float a, float angle)
+void Sprite::Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh, float r, float g, float b, float a, float angle)
 {
-	render(device_context, dx, dy, dw, dh, r, g, b, a, angle, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
+	Render(device_context, dx, dy, dw, dh, r, g, b, a, angle, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
 
 }
-void Sprite::render(ID3D11DeviceContext* device_context,float dx,float dy,float dw,float dh,float r,float g,float b,float a,float angle,float sx,float sy,float sw,float sh)
+void Sprite::Render(ID3D11DeviceContext* device_context,float dx,float dy,float dw,float dh,float r,float g,float b,float a,float angle,float sx,float sy,float sw,float sh)
 {
 	D3D11_VIEWPORT viewport{};
 	UINT num_viewport{ 1 };
@@ -419,10 +228,12 @@ void Sprite::render(ID3D11DeviceContext* device_context,float dx,float dy,float 
 	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	device_context->IASetInputLayout(input_layout.Get());
 	device_context->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
-	device_context->PSSetSamplers(0, 1, sampler_states[static_cast<int>(ss)].GetAddressOf());
-	device_context->OMSetDepthStencilState(depth_stencil_states[static_cast<int>(dss)].Get(), 1);
-	device_context->OMSetBlendState(blender_states[static_cast<int>(bs)].Get(), nullptr,0xFFFFFFFF);
-	device_context->RSSetState(rasterizer_state.Get());
+
+	device_context->PSSetSamplers(0, 1, RenderStates::samplerStates[static_cast<int>(ss)].GetAddressOf());
+	device_context->OMSetDepthStencilState(RenderStates::depthStencilStates[static_cast<int>(dss)].Get(), 1);
+	device_context->OMSetBlendState(RenderStates::blendStates[static_cast<int>(bs)].Get(), nullptr, 0xFFFFFFFF);
+
+	device_context->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_SOLID)].Get());
 	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
 	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
 	device_context->Draw(4, 0);

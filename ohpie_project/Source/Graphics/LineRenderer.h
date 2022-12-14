@@ -3,6 +3,7 @@
 #include <directxmath.h>
 #include <wrl.h>
 #include <vector>
+#include "RenderContext.h"
 class LineRenderer
 {
 public:
@@ -10,7 +11,7 @@ public:
 	~LineRenderer() {};
 public:
 	void AddVertex(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& color);
-	void Render(ID3D11DeviceContext* device_context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);
+	void Render(RenderContext& rc);
 private:
 
 	struct Vertex

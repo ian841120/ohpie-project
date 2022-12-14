@@ -34,16 +34,12 @@ void LightManager::DrawDebugGUI()
 {
 	ImGui::Begin("Light");
 
-	if (ImGui::TreeNode("Light"))
+	int nodeID = 0;
+	for (Light* light : lights)
 	{
-		int nodeID = 0;
-		for (Light* light : lights)
-		{
-			ImGui::PushID(nodeID++);
-			light->DrawDebugGUI();
-			ImGui::PopID();
-		}
-		ImGui::TreePop();
+		ImGui::PushID(nodeID++);
+		light->DrawDebugGUI();
+		ImGui::PopID();
 	}
 	ImGui::End();
 
