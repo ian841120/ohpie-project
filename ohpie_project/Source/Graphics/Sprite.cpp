@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include "Shader.h"
 #include "Graphics.h"
 #include <memory>
 #include <WICTextureLoader.h>
@@ -38,44 +39,18 @@ Sprite::Sprite(const wchar_t* filename)
 
 	//Vertex shader
 	{
-		// Read cso file
-		FILE* fp{ nullptr };
-		fopen_s(&fp, "./Shader/SpriteVS.cso", "rb");
-		_ASSERT_EXPR(fp, L"VS CSO File not found");
-		fseek(fp, 0, SEEK_END);
-		long cso_sz{ ftell(fp) };
-		fseek(fp, 0, SEEK_SET);
-		std::unique_ptr<unsigned char[]>cso_data{ std::make_unique<unsigned char[]>(cso_sz) };
-		fread(cso_data.get(), cso_sz, 1, fp);
-		fclose(fp);
-		//Create vertex shader
-		hr = device->CreateVertexShader(cso_data.get(), cso_sz, nullptr, vertex_shader.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create vertexshader");
-		//Create input layout
 		D3D11_INPUT_ELEMENT_DESC input_element_desc[]
 		{
 			{"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 			{"COLOR",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 			{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		};
-		hr = device->CreateInputLayout(input_element_desc, _countof(input_element_desc), cso_data.get(), cso_sz, input_layout.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create inputlayout");
+
+		create_vs_from_file(device, "./Shader/SpriteVS.cso", vertex_shader.GetAddressOf(), input_layout.GetAddressOf(), input_element_desc, _countof(input_element_desc));
 	}
 	//Pixel shader
 	{
-		//Read cso file
-		FILE* fp{ nullptr };
-		fopen_s(&fp, "./Shader/SpritePS.cso", "rb");
-		_ASSERT_EXPR(fp, L"PS CSO File not found");
-		fseek(fp, 0, SEEK_END);
-		long cso_sz{ ftell(fp) };
-		fseek(fp, 0, SEEK_SET);
-		std::unique_ptr<unsigned char[]>cso_data{ std::make_unique<unsigned char[]>(cso_sz) };
-		fread(cso_data.get(), cso_sz, 1, fp);
-		fclose(fp);
-		//Create Pixel shader
-		hr = device->CreatePixelShader(cso_data.get(), cso_sz, nullptr, pixel_shader.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create pixelshader");
+		create_ps_from_file(device, "./Shader/SpritePS.cso", pixel_shader.GetAddressOf());
 	}
 	if (filename != nullptr)
 	{

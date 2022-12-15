@@ -279,5 +279,8 @@
     <ClCompile Include="Source\Graphics\Fog.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Shader.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

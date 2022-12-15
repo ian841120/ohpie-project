@@ -1,7 +1,8 @@
 #include "Skybox.h"
 #include <DDSTextureLoader.h>
-#include <memory>
 #include <vector>
+#include "Shader.h"
+#include "RenderStates.h"
 Skybox::Skybox(ID3D11Device* device)
 {
 	HRESULT hr{ S_OK };
@@ -103,40 +104,17 @@ Skybox::Skybox(ID3D11Device* device)
 	}
 	//Create vertex shader
 	{
-		FILE* fp{};
-		fopen_s(&fp, "./Shader/SkyBoxVS.cso", "rb");
-		_ASSERT_EXPR(fp, L"CSO not found");
-		fseek(fp, 0, SEEK_END);
-		long cso_sz{ ftell(fp) };
-		fseek(fp, 0, SEEK_SET);
-		std::unique_ptr<unsigned char[]>cso_data = std::make_unique<unsigned char[]>(cso_sz);
-		fread(cso_data.get(), cso_sz, 1, fp);
-		fclose(fp);
-		hr = device->CreateVertexShader(cso_data.get(), cso_sz, nullptr, vertex_shader.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create vertex shader");
 
 		D3D11_INPUT_ELEMENT_DESC input_element_desc[] =
 		{
 			{"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0,D3D11_APPEND_ALIGNED_ELEMENT,D3D11_INPUT_PER_VERTEX_DATA,0},
 		};
 
-		hr = device->CreateInputLayout(input_element_desc, _countof(input_element_desc), cso_data.get(), cso_sz, input_layout.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create inputlayout");
-
+		create_vs_from_file(device, "./Shader/SkyBoxVS.cso", vertex_shader.GetAddressOf(), input_layout.GetAddressOf(), input_element_desc, _countof(input_element_desc));
 	}
 	//Create Pixel Shader
 	{
-		FILE* fp{};
-		fopen_s(&fp, "./Shader/SkyBoxPS.cso", "rb");
-		_ASSERT_EXPR(fp, L"CSO not found");
-		fseek(fp, 0, SEEK_END);
-		long cso_sz{ ftell(fp) };
-		fseek(fp, 0, SEEK_SET);
-		std::unique_ptr<unsigned char[]>cso_data = std::make_unique<unsigned char[]>(cso_sz);
-		fread(cso_data.get(), cso_sz, 1, fp);
-		fclose(fp);
-		hr = device->CreatePixelShader(cso_data.get(), cso_sz, nullptr, pixel_shader.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create pixel shader");
+		create_ps_from_file(device, "./Shader/SkyBoxPS.cso", pixel_shader.GetAddressOf());
 	}
 	//Create constant buffer
 	{
@@ -158,68 +136,6 @@ Skybox::Skybox(ID3D11Device* device)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to shader resource view");
 		
 		
-	}
-	//Create depth stencil state
-	{
-		D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{};
-		depth_stencil_desc.StencilEnable = true;
-		depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depth_stencil_desc.DepthFunc= D3D11_COMPARISON_LESS_EQUAL;
-		depth_stencil_desc.StencilEnable = false;
-		hr = device->CreateDepthStencilState(&depth_stencil_desc, depth_stencil_state.GetAddressOf());
-	}
-	//Create sampler state
-	{
-		D3D11_SAMPLER_DESC sampler_desc{};
-		sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampler_desc.MipLODBias = 0;
-		sampler_desc.MaxAnisotropy = 16;
-		sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		sampler_desc.BorderColor[0] = 0;
-		sampler_desc.BorderColor[1] = 0;
-		sampler_desc.BorderColor[2] = 0;
-		sampler_desc.BorderColor[3] = 0;
-		sampler_desc.MinLOD = 0;
-		sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
-		sampler_desc.Filter = D3D11_FILTER_ANISOTROPIC;
-		hr = device->CreateSamplerState(&sampler_desc, sampler_state.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create sampler state failed");
-	}
-	//Create rasterizer state
-	{
-		D3D11_RASTERIZER_DESC desc{};
-		desc.FrontCounterClockwise = true;
-		desc.DepthBias = 0;
-		desc.DepthBiasClamp = 0;
-		desc.SlopeScaledDepthBias = 0;
-		desc.DepthClipEnable = true;
-		desc.ScissorEnable = false;
-		desc.MultisampleEnable = true;
-		desc.FillMode = D3D11_FILL_SOLID;
-		desc.CullMode = D3D11_CULL_NONE;
-		desc.AntialiasedLineEnable = false;
-		hr = device->CreateRasterizerState(&desc, rasterizer_state.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Create rasterizer state failed");
-
-	}
-	//Create blend state
-	{
-		D3D11_BLEND_DESC blend_desc{};
-		blend_desc.AlphaToCoverageEnable = false;
-		blend_desc.IndependentBlendEnable = false;
-		blend_desc.RenderTarget[0].BlendEnable = false;
-		blend_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blend_desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-		blend_desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blend_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-		blend_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blend_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		HRESULT hr = device->CreateBlendState(&blend_desc, blend_state.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create blend state");
 	}
 }
 void Skybox::Render(const RenderContext& rc)
@@ -256,12 +172,12 @@ void Skybox::Render(const RenderContext& rc)
 
 	//Set target render view;
 	const float blenderFactor[4] = { 1.0f,1.0f,1.0f,1.0f };
-	rc.deviceContext->OMSetBlendState(blend_state.Get(), blenderFactor, 0XFFFFFFFF);
-	rc.deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-	rc.deviceContext->RSSetState(rasterizer_state.Get());
+	rc.deviceContext->OMSetBlendState(RenderStates::blendStates[static_cast<int>(RenderStates::BS::NONE)].Get(), blenderFactor, 0XFFFFFFFF);
+	rc.deviceContext->OMSetDepthStencilState(RenderStates::depthStencilStates[static_cast<int>(RenderStates::DSS::ZT_OFF_ZW_OFF)].Get(), 0);
+	rc.deviceContext->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_SOLID)].Get());
 
 	rc.deviceContext->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
-	rc.deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
+	rc.deviceContext->PSSetSamplers(0, 1, RenderStates::samplerStates[static_cast<int>(RenderStates::SS::ANISOTROPIC_SAMPLER_STATE)].GetAddressOf());
 	rc.deviceContext->DrawIndexed(sphereIndexCount, 0, 0);
 }
 // TODO 2 : put in

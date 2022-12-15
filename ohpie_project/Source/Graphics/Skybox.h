@@ -29,14 +29,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	input_layout;
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	depth_stencil_state;
 
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>	sampler_state;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizer_state;
-	Microsoft::WRL::ComPtr<ID3D11BlendState>	blend_state;
-
-
-	
 	UINT sphereIndexCount = 0;
 
 };

@@ -11,8 +11,8 @@ void Fog::DrawDebugGui()
 	ImGui::Begin("Effect");
 	if (ImGui::TreeNode("Fog"))
 	{
-		ImGui::DragFloat("FogStart", &fogStart, 0.1f, 0.0f, FLT_MAX);
-		ImGui::DragFloat("FogRange", &fogRange, 0.1f, 0.0f, FLT_MAX);
+		ImGui::DragFloat("FogStart", &fogStart, 1.0f, 0.0f, FLT_MAX);
+		ImGui::DragFloat("FogRange", &fogRange, 1.0f, 0.0f, FLT_MAX);
 		ImGui::ColorEdit4("FogColor", &fogColor.x);
 		ImGui::TreePop();
 	}

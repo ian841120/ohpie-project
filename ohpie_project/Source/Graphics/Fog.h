@@ -18,7 +18,7 @@ public:
 	const float GetFogRange() { return fogRange; }
 private:
 	DirectX::XMFLOAT4 fogColor = { 0.5f,0.5f,0.5f,1.0f };
-	float fogStart=20.0f;
+	float fogStart = 90.0f;
 	float fogRange = 60.0f;
 
 };

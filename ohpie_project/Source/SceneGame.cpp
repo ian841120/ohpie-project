@@ -47,9 +47,10 @@ void SceneGame::Render()
 	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
 	ID3D11RenderTargetView* rtv = graphics.GetRenderTargetView();
 	ID3D11DepthStencilView* dsv = graphics.GetDepthStencilView();
+	
 
 	//Screen clear and set render target view
-	FLOAT color[] = { 0.2f, 0.2f, 0.2f, 0.0f };	// RGBA(0.0`1.0)
+	FLOAT color[] = { 0.5f, 0.5f, 0.5f, 0.0f };	// RGBA(0.0`1.0)
 	dc->ClearRenderTargetView(rtv, color);
 	dc->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	dc->OMSetRenderTargets(1, &rtv, dsv);
@@ -64,10 +65,10 @@ void SceneGame::Render()
 	rc.projection = camera.GetProjection();
 	LightManager::Instance().PushRenderContext(rc);
 	fog->pushRenderContext(rc);
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
-	graphics.GetSkyBox()->Render(rc);
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
+	//graphics.GetSkyBox()->Render(rc);
 
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
 
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
