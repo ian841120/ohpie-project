@@ -43,6 +43,9 @@
     <Filter Include="ソース ファイル\Light">
       <UniqueIdentifier>{04f26ccb-88f0-466e-8dae-c2139168333d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External\Assimp">
+      <UniqueIdentifier>{cf313bd7-d0c1-474b-8cac-63e52c42770a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Sprite.hlsli">
@@ -192,6 +195,9 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\Fog.h">
       <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="External\Assimp\include\assimp\config.h">
+      <Filter>External\Assimp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

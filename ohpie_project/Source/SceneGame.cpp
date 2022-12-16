@@ -3,6 +3,14 @@
 #include "Input\InputClass.h"
 #include "Camera.h"
 #include "Graphics\LightManager.h"
+
+#include <assimp\Importer.hpp>
+#include <assimp\scene.h>
+#include <assimp\postprocess.h>
+#include <iostream>
+#include <sstream>
+
+#include <Windows.h>
 void SceneGame::Initialize()
 {
 	sprite[0] = std::make_unique<Sprite>(L"./Data/Image/Cyberpunk.jpg");
@@ -16,6 +24,7 @@ void SceneGame::Initialize()
 	light->SetPosition(sphere.position);
 	light->SetColor(sphere.color);
 	LightManager::Instance().Register(light);
+
 }
 void SceneGame::Update(float elapsed_time)
 {
@@ -26,8 +35,6 @@ void SceneGame::Update(float elapsed_time)
 	earth.position = { sphere.position.x + range * cosf(angle), sphere.position.y, sphere.position.z + range * sinf(angle) };
 	earth.radius = 5;
 	earth.color = white;
-
-
 	moon.position = { earth.position.x + range * cosf(2*angle)*0.5f, earth.position.y, earth.position.z + range * sinf(2*angle)*0.5f };
 	moon.radius = 2;
 	moon.color = white;

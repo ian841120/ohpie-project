@@ -1,5 +1,6 @@
 #include "GeometricPrimitive.h"
 #include <memory>
+
 GeometricPrimitive::GeometricPrimitive(ID3D11Device* device)
 {
 	HRESULT hr{ S_OK };
