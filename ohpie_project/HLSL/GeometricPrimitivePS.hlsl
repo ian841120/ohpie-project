@@ -27,7 +27,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     //Fog
     {
-        color.rgb += calcFogColor(distToEye, fogData.fogStart, fogData.fogRange, fogData.fogColor.rgb, color.rgb);
+        //color.rgb += calcFogColor(distToEye, fogData.fogStart, fogData.fogRange, fogData.fogColor.rgb, color.rgb);
         //lerp(x,y,f) = x*(1-f)+y*f
     }
     return color;

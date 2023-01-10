@@ -4,11 +4,6 @@
 #include "Camera.h"
 #include "Graphics\LightManager.h"
 
-#include <assimp\Importer.hpp>
-#include <assimp\scene.h>
-#include <assimp\postprocess.h>
-#include <iostream>
-#include <sstream>
 
 #include <Windows.h>
 void SceneGame::Initialize()
@@ -71,11 +66,11 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 	LightManager::Instance().PushRenderContext(rc);
-	fog->pushRenderContext(rc);
-	//graphics.GetSkyBox()->Render(rc);
+	//fog->pushRenderContext(rc);
+	graphics.GetSkyBox()->Render(rc);
 
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
+	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
 
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });
 	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
