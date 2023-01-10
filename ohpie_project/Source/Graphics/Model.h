@@ -2,20 +2,15 @@
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
-#include <directxmath.h>
+
+#include "Mesh.h"
 class Model
 {
 	Model(const char* filename);
 	~Model() {};
-	void Draw();
+	void Draw(ID3D11DeviceContext*deviceContext);
 private:
-	int vertexCount = 0;
-	int indexCount = 0;
-
-	struct Vertex
-	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT2 texcoord;
-		DirectX::XMFLOAT3 normal;
-	};
+	std::vector<Mesh>meshes;
+	void processNode(aiNode* node, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 };

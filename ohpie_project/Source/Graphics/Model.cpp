@@ -12,20 +12,25 @@ Model::Model(const char* filename)
 	{
 		return;
 	}
+	processNode(scene->mRootNode, scene);
 
-	std::vector<Vertex>vertices;
-	std::vector<UINT>indices;
-
-	if (scene->HasMeshes())
+}
+void Model::Draw(ID3D11DeviceContext* deviceContext)
+{
+	for (size_t i = 0; i < meshes.size(); i++)
 	{
-		for (unsigned int i = 0; i < scene->mNumMeshes; i++)
-		{
-			const auto mesh = scene->mMeshes[i];
-			for (unsigned int j = 0; j < mesh->mNumVertices; j++)
-			{
-
-			}
-		}
-
+		meshes[i].Draw(deviceContext);
+	}
+}
+void Model::processNode(aiNode* node, const aiScene* scene)
+{
+	for (UINT i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		meshes.emplace_back(processMesh(mesh, scene));
+	}
+	for (UINT i = 0; i < node->mNumChildren; i++)
+	{
+		processNode(node->mChildren[i], scene);
 	}
 }

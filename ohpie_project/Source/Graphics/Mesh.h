@@ -25,6 +25,7 @@ public:
 	Mesh(ID3D11Device* device, const std::vector<Vertex>& vertices, const std::vector<UINT>& indices, const std::vector<Texture>& textures);
 	void Draw(ID3D11DeviceContext* deviceContext);
 private:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer;
+	void setupMesh(ID3D11Device* device);
 };
