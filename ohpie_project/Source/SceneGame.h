@@ -3,6 +3,7 @@
 #include <memory>
 #include "Graphics\Light.h"
 #include "Graphics\Fog.h"
+#include "Graphics\Model.h"
 class SceneGame
 {
 public:
@@ -17,6 +18,10 @@ private:
 	void DrawDebugGUI();
 private:
 	std::unique_ptr<Sprite> sprite[2];
+	std::unique_ptr<Model> player;
+	std::unique_ptr<Model> stage;
+	std::unique_ptr<Model> sword;
+	std::unique_ptr<Model> jammo;
 	struct Cuboid
 	{
 		DirectX::XMFLOAT4 color;

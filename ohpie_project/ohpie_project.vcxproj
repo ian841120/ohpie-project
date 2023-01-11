@@ -182,6 +182,7 @@
     <None Include="HLSL\GeometricPrimitive.hlsli" />
     <None Include="HLSL\Light.hlsli" />
     <None Include="HLSL\LineRenderer.hlsli" />
+    <None Include="HLSL\Model.hlsli" />
     <None Include="HLSL\Skybox.hlsli" />
     <None Include="HLSL\Sprite.hlsli" />
   </ItemGroup>
@@ -217,6 +218,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\LineRendererVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\ModelPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\ModelVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -271,7 +284,6 @@
     <ClInclude Include="Source\Graphics\Light.h" />
     <ClInclude Include="Source\Graphics\LightManager.h" />
     <ClInclude Include="Source\Graphics\LineRenderer.h" />
-    <ClInclude Include="Source\Graphics\Mesh.h" />
     <ClInclude Include="Source\Graphics\Model.h" />
     <ClInclude Include="Source\Graphics\RenderContext.h" />
     <ClInclude Include="Source\Graphics\RenderStates.h" />
@@ -304,7 +316,6 @@
     <ClCompile Include="Source\Graphics\Light.cpp" />
     <ClCompile Include="Source\Graphics\LightManager.cpp" />
     <ClCompile Include="Source\Graphics\LineRenderer.cpp" />
-    <ClCompile Include="Source\Graphics\Mesh.cpp" />
     <ClCompile Include="Source\Graphics\Model.cpp" />
     <ClCompile Include="Source\Graphics\RenderStates.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />

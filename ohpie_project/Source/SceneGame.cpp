@@ -10,6 +10,10 @@ void SceneGame::Initialize()
 {
 	sprite[0] = std::make_unique<Sprite>(L"./Data/Image/Cyberpunk.jpg");
 	sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
+	player = std::make_unique<Model>("./Data/model/Mr.Incredible/Mr.Incredible.obj");
+	//stage = std::make_unique<Model>("./Data/model/ExampleStage/ExampleStage.fbx");
+	//sword = std::make_unique<Model>("./Data/model/Sword/Sword.fbx");
+	//jammo = std::make_unique<Model>("./Data/model/Jammo/Jammo.fbx");
 	//Fog
 	fog = std::make_unique<Fog>();
 	// Directional light
@@ -67,20 +71,25 @@ void SceneGame::Render()
 	rc.projection = camera.GetProjection();
 	LightManager::Instance().PushRenderContext(rc);
 	//fog->pushRenderContext(rc);
-	graphics.GetSkyBox()->Render(rc);
+	//graphics.GetSkyBox()->Render(rc);
+	//
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
+	//
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(moon.position, moon.radius, moon.color);
+	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ sphere.position.x + 4*range * cosf(angle) ,sphere.position.y ,sphere.position.z + 4*range * sinf(angle) }, 2, sphere.color);
+	//DrawGrid();
+	//graphics.GetGeometricPrimitive()->Render(rc);
+	//graphics.GetLineRenderer()->Render(rc);
+	//LightManager::Instance().DrawDebugPrimitive();
+	//graphics.GetDebugRenderer()->Render(rc);
 
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
-	graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
-
-	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });
-	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
-	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(moon.position, moon.radius, moon.color);
-	graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ sphere.position.x + 4*range * cosf(angle) ,sphere.position.y ,sphere.position.z + 4*range * sinf(angle) }, 2, sphere.color);
-	DrawGrid();
-	graphics.GetGeometricPrimitive()->Render(rc);
-	graphics.GetLineRenderer()->Render(rc);
-	LightManager::Instance().DrawDebugPrimitive();
-	graphics.GetDebugRenderer()->Render(rc);
+	player->Render(rc);
+	//stage->Render(rc);
+	//sword->Render(rc);
+	//jammo->Render(rc);
 	//sprite[0]->Render(dc,0,0,1960,1080);
 	//sprite[1]->Render(dc,0,0,1960,1080);
 }
