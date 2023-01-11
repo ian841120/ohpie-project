@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+!ohpie_project/External/Assimp/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -402,4 +404,4 @@ FodyWeavers.xsd
 *.cso
 *.cod
 Shader/
-!External/
+!ohpie_project/External/Assimp/
