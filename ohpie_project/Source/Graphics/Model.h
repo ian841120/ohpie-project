@@ -5,7 +5,7 @@
 #include "RenderContext.h"
 #include <vector>
 #include <wrl.h>
-
+#include <string>
 class Model
 {
 public:
@@ -17,15 +17,22 @@ public:
 	{
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT2 texcoord;
 	};
-
+	struct Texture
+	{
+		std::string type;
+		std::string path;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
+	
+	};
 private:
 
 	struct Mesh
 	{
 		std::vector<Vertex> vertices;
 		std::vector<UINT> indices;
-
+		std::vector<Texture> textures;
 		Microsoft::WRL::ComPtr<ID3D11Buffer>	vertex_buffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer>	index_buffer;
 
@@ -35,6 +42,8 @@ private:
 	{
 		DirectX::XMFLOAT4X4 view_project;
 	};
+private:
+	std::string directory;
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	constant_buffer;
 

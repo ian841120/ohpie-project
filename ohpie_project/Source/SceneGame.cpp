@@ -10,7 +10,7 @@ void SceneGame::Initialize()
 {
 	sprite[0] = std::make_unique<Sprite>(L"./Data/Image/Cyberpunk.jpg");
 	sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-	player = std::make_unique<Model>("./Data/model/Mr.Incredible/Mr.Incredible.obj");
+	player = std::make_unique<Model>("./Data/model/Cup/cup.obj");
 	//stage = std::make_unique<Model>("./Data/model/ExampleStage/ExampleStage.fbx");
 	//sword = std::make_unique<Model>("./Data/model/Sword/Sword.fbx");
 	//jammo = std::make_unique<Model>("./Data/model/Jammo/Jammo.fbx");
