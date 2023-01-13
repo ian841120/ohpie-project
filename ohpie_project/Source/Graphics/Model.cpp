@@ -11,7 +11,7 @@ Model::Model(const char* filename)
 	{
 		{"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0,D3D11_APPEND_ALIGNED_ELEMENT,D3D11_INPUT_PER_VERTEX_DATA,0},
 		{"NORMAL",0,DXGI_FORMAT_R32G32B32_FLOAT,0,D3D11_APPEND_ALIGNED_ELEMENT,D3D11_INPUT_PER_VERTEX_DATA,0},
-		//{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	
 	create_vs_from_file(device, "./Shader/ModelVS.cso", vertex_shader.GetAddressOf(), input_layout.GetAddressOf(), input_element_desc, _countof(input_element_desc));
@@ -122,14 +122,14 @@ void Model::processMesh(aiMesh*mesh,const aiScene*scene)
 	
 	if (mesh->mMaterialIndex >= 0)
 	{
-
+		
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 		if (!material->GetTextureCount(aiTextureType_DIFFUSE))
 		{
 			Texture texture;
 			texture.texture = nullptr;
 			mesh_.textures.emplace_back(texture);
-
+		
 		}
 		for (UINT i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
 		{
@@ -175,7 +175,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 {
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[1]];
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		processMesh(mesh, scene);
 	}
 	for (UINT i = 0; i < node->mNumChildren; i++)
