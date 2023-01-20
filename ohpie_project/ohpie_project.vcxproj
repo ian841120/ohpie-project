@@ -184,7 +184,7 @@
     <None Include="HLSL\LineRenderer.hlsli" />
     <None Include="HLSL\Model.hlsli" />
     <None Include="HLSL\Skybox.hlsli" />
-    <None Include="HLSL\Sprite.hlsli" />
+    <None Include="HLSL\DefaultSprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\DebugRendererPS.hlsl">
@@ -247,13 +247,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\SpritePS.hlsl">
+    <FxCompile Include="HLSL\DefaultSpritePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\SpriteVS.hlsl">
+    <FxCompile Include="HLSL\DefaultSpriteVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -277,6 +277,7 @@
     <ClInclude Include="Source\CpuTimer.h" />
     <ClInclude Include="Source\Framework.h" />
     <ClInclude Include="Source\Graphics\DebugRenderer.h" />
+    <ClInclude Include="Source\Graphics\DefaultSpriteShader.h" />
     <ClInclude Include="Source\Graphics\Fog.h" />
     <ClInclude Include="Source\Graphics\GeometricPrimitive.h" />
     <ClInclude Include="Source\Graphics\Graphics.h" />
@@ -290,6 +291,7 @@
     <ClInclude Include="Source\Graphics\Shader.h" />
     <ClInclude Include="Source\Graphics\Skybox.h" />
     <ClInclude Include="Source\Graphics\Sprite.h" />
+    <ClInclude Include="Source\Graphics\Texture.h" />
     <ClInclude Include="Source\Input\InputClass.h" />
     <ClInclude Include="Source\Input\KeyboardClass.h" />
     <ClInclude Include="Source\Input\MouseClass.h" />
@@ -309,6 +311,7 @@
     <ClCompile Include="Source\CpuTimer.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\Graphics\DebugRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\DefaultSpriteShader.cpp" />
     <ClCompile Include="Source\Graphics\Fog.cpp" />
     <ClCompile Include="Source\Graphics\GeometricPrimitive.cpp" />
     <ClCompile Include="Source\Graphics\Graphics.cpp" />
@@ -321,6 +324,7 @@
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Skybox.cpp" />
     <ClCompile Include="Source\Graphics\Sprite.cpp" />
+    <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Input\InputClass.cpp" />
     <ClCompile Include="Source\Input\KeyboardClass.cpp" />
     <ClCompile Include="Source\Input\MouseClass.cpp" />

@@ -7,7 +7,6 @@ class Sprite
 {
 public:
 	Sprite();
-	Sprite(const wchar_t* filename);
 	~Sprite() {};
 	struct Vertex
 	{
@@ -17,21 +16,19 @@ public:
 	};
 private:
 	
-	Microsoft::WRL::ComPtr<ID3D11VertexShader>			vertex_shader;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>			pixel_shader;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>			input_layout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>				vertex_buffer;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	shader_resource_view;
 	D3D11_TEXTURE2D_DESC								texture2d_desc;
 
-	RenderStates::DSS									dss = RenderStates::DSS::ZT_ON_ZW_ON;
-	RenderStates::BS									bs = RenderStates::BS::ALPHA;
-	RenderStates::SS									ss = RenderStates::SS::LINEAR_SAMPLER_STATE;
+	int textureWidth = 0;
+	int textureHeight = 0;
+
 public:
-	void Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh);
-	void Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh, float r, float g , float b, float a , float angle );
-	void Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh, float r, float g , float b , float a , float angle , float sx , float sy , float sw , float sh );
-	void SetSamplerState(RenderStates::SS ss) { this->ss = ss; }
-	void SetDepthStencilState(RenderStates::DSS dss) { this->dss = dss; }
-	void SetBlendState(RenderStates::BS bs) { this->bs = bs; }
+	const Microsoft::WRL::ComPtr<ID3D11Buffer>& GetVertexBuffer()const { return vertex_buffer; }
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetShaderResourceView()const { return shader_resource_view; }
+
+	void SetShaderResourceView(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& srv, int texWidth, int texHeight);
+	void Update(float dx, float dy, float dw, float dh);
+	void Update(float dx, float dy, float dw, float dh, float r, float g , float b, float a , float angle );
+	void Update(float dx, float dy, float dw, float dh, float r, float g , float b , float a , float angle , float sx , float sy , float sw , float sh );
 };

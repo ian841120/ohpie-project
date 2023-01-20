@@ -3,11 +3,7 @@
 #include "Graphics.h"
 #include <memory>
 #include <WICTextureLoader.h>
-Sprite::Sprite() :Sprite(nullptr)
-{
-
-}
-Sprite::Sprite(const wchar_t* filename)
+Sprite::Sprite()
 {
 	ID3D11Device* device = Graphics::GetInstance().GetDevice();
 	HRESULT hr = { S_OK };
@@ -36,38 +32,6 @@ Sprite::Sprite(const wchar_t* filename)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create vertex buffer failed");
 
 	}
-
-	//Vertex shader
-	{
-		D3D11_INPUT_ELEMENT_DESC input_element_desc[]
-		{
-			{"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"COLOR",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		};
-
-		create_vs_from_file(device, "./Shader/SpriteVS.cso", vertex_shader.GetAddressOf(), input_layout.GetAddressOf(), input_element_desc, _countof(input_element_desc));
-	}
-	//Pixel shader
-	{
-		create_ps_from_file(device, "./Shader/SpritePS.cso", pixel_shader.GetAddressOf());
-	}
-	if (filename != nullptr)
-	{
-		//Read texture from file
-		Microsoft::WRL::ComPtr<ID3D11Resource> resource;
-		hr = DirectX::CreateWICTextureFromFile(device, filename, resource.GetAddressOf(), shader_resource_view.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to create texture");
-		//Get texture description
-
-		Microsoft::WRL::ComPtr<ID3D11Texture2D>texture2d;
-		hr = resource->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), L"Get texture2d address failed");
-		texture2d->GetDesc(&texture2d_desc);
-
-
-	}
-	else
 	{
 		//Create dummy texture
 		const int width = 8;
@@ -101,20 +65,24 @@ Sprite::Sprite(const wchar_t* filename)
 		_ASSERT_EXPR(SUCCEEDED(hr), L"Create dummy shader resource view failed");
 
 		texture2d->GetDesc(&texture2d_desc);
+
+		textureWidth = texture_desc.Width;
+		textureHeight = texture_desc.Height;
 	}
 
 }
-void Sprite::Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh)
+void Sprite::Update(float dx, float dy, float dw, float dh)
 {
-	Render(device_context, dx, dy, dw, dh, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
+	Update(dx, dy, dw, dh, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
 }
-void Sprite::Render(ID3D11DeviceContext* device_context, float dx, float dy, float dw, float dh, float r, float g, float b, float a, float angle)
+void Sprite::Update(float dx, float dy, float dw, float dh, float r, float g, float b, float a, float angle)
 {
-	Render(device_context, dx, dy, dw, dh, r, g, b, a, angle, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
+	Update(dx, dy, dw, dh, r, g, b, a, angle, 0.0f, 0.0f, static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height));
 
 }
-void Sprite::Render(ID3D11DeviceContext* device_context,float dx,float dy,float dw,float dh,float r,float g,float b,float a,float angle,float sx,float sy,float sw,float sh)
+void Sprite::Update(float dx,float dy,float dw,float dh,float r,float g,float b,float a,float angle,float sx,float sy,float sw,float sh)
 {
+	ID3D11DeviceContext* device_context = Graphics::GetInstance().GetDeviceContext();
 	D3D11_VIEWPORT viewport{};
 	UINT num_viewport{ 1 };
 	device_context->RSGetViewports(&num_viewport, &viewport);
@@ -196,22 +164,11 @@ void Sprite::Render(ID3D11DeviceContext* device_context,float dx,float dy,float 
 		}
 	}
 	device_context->Unmap(vertex_buffer.Get(), 0);
-
-	UINT stride{ sizeof(Vertex) };
-	UINT offset{ 0 };
-	device_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
-	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	device_context->IASetInputLayout(input_layout.Get());
-	device_context->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
-
-	device_context->PSSetSamplers(0, 1, RenderStates::samplerStates[static_cast<int>(ss)].GetAddressOf());
-	device_context->OMSetDepthStencilState(RenderStates::depthStencilStates[static_cast<int>(dss)].Get(), 1);
-	device_context->OMSetBlendState(RenderStates::blendStates[static_cast<int>(bs)].Get(), nullptr, 0xFFFFFFFF);
-
-	device_context->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_SOLID)].Get());
-	device_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
-	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
-	device_context->Draw(4, 0);
-	
+}
+void Sprite::SetShaderResourceView(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& srv, int texWidth, int texHeight)
+{
+	shader_resource_view = srv;
+	textureWidth = texWidth;
+	textureHeight = texHeight;
 
 }

@@ -8,6 +8,12 @@
 #include "Skybox.h"
 #include "RenderContext.h"
 #include "RenderStates.h"
+#include "Shader.h"
+enum class ShaderId
+{
+	defaultSpriteShader,
+	max,
+};
 class Graphics
 {
 public:
@@ -28,6 +34,7 @@ public:
 	GeometricPrimitive*		GetGeometricPrimitive()const { return geometricPrimitive.get(); }
 	LineRenderer*			GetLineRenderer()const { return lineRenderer.get(); }
 	Skybox*					GetSkyBox()const { return skyBox.get(); }
+	SpriteShader*			GetShader(ShaderId id)const { return spriteShaders[static_cast<int>(id)].get(); }
 private:
 	static Graphics*								instance;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -43,6 +50,8 @@ private:
 	std::unique_ptr<LineRenderer>					lineRenderer;
 	std::unique_ptr<Skybox>							skyBox;
 	std::unique_ptr<RenderStates>					renderStates;
+
+	std::unique_ptr<SpriteShader>					spriteShaders[static_cast<int>(ShaderId::max)];
 	float screenWidth;
 	float screenHeight;
 };

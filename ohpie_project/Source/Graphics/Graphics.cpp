@@ -1,5 +1,5 @@
 #include "Graphics.h"
-
+#include "DefaultSpriteShader.h"
 Graphics* Graphics::instance = nullptr;
 Graphics::Graphics(HWND hwnd)
 {
@@ -82,5 +82,9 @@ Graphics::Graphics(HWND hwnd)
 		lineRenderer = std::make_unique<LineRenderer>(device.Get(), 1024);
 		skyBox = std::make_unique<Skybox>(device.Get());
 		renderStates = std::make_unique<RenderStates>(device.Get());
+	}
+	//Sprite shader
+	{
+		spriteShaders[static_cast<int>(ShaderId::defaultSpriteShader)] = std::make_unique<DefaultSpriteShader>();
 	}
 }

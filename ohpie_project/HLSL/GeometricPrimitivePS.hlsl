@@ -1,6 +1,9 @@
 #include "GeometricPrimitive.hlsli"
 float4 main(VS_OUT pin) : SV_TARGET
 {
+    return pin.color;
+    
+    
     float3 toEye = viewPosition.xyz - pin.world_position.xyz;
     float distToEye = length(toEye);
     float3 N = normalize(pin.normal);

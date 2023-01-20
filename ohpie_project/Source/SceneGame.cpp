@@ -4,43 +4,82 @@
 #include "Camera.h"
 #include "Graphics\LightManager.h"
 
-
 #include <Windows.h>
 void SceneGame::Initialize()
 {
-	//sprite[0] = std::make_unique<Sprite>();
-	//sprite[1] = std::make_unique<Sprite>(L"./Data/Image/player-sprites.png");
-	player = std::make_unique<Model>("./Data/model/Mr.Incredible/Mr.Incredible.obj");
-	//stage = std::make_unique<Model>("./Data/model/ExampleStage/ExampleStage.fbx");
-	//sword = std::make_unique<Model>("./Data/model/Sword/Sword.fbx");
-	//jammo = std::make_unique<Model>("./Data/model/Jammo/Jammo.fbx");
-	//Fog
-	fog = std::make_unique<Fog>();
-	// Directional light
 	LightManager::Instance().Register(new Light(Light::LIGHTTYPE::directional));
-	// Point Light
-	Light* light = new Light(Light::LIGHTTYPE::point);
-	light->SetPosition(sphere.position);
-	light->SetColor(sphere.color);
-	LightManager::Instance().Register(light);
 
+	sprite = std::make_unique<Sprite>();
+	texture = std::make_unique<Texture>("./Data/Image/cyberpunk.jpg");
+	sprite->SetShaderResourceView(texture->GetSRV(), texture->GetWidth(), texture->GetHeight());
 }
 void SceneGame::Update(float elapsed_time)
 {
-	//x += 1*elapsed_time;
-	angle += 0.01f;
+	sprite->Update(100, 100, 500, 500);
 
 
-	earth.position = { sphere.position.x + range * cosf(angle), sphere.position.y, sphere.position.z + range * sinf(angle) };
-	earth.radius = 5;
-	earth.color = white;
-	moon.position = { earth.position.x + range * cosf(2*angle)*0.5f, earth.position.y, earth.position.z + range * sinf(2*angle)*0.5f };
-	moon.radius = 2;
-	moon.color = white;
-
-	ImGui::Begin("ImGUI");
+	ImGui::Begin("GeoCreater");
 	LightManager::Instance().DrawDebugGUI();
-	DrawDebugGUI();
+	
+	if(ImGui::Combo("test", &var, name))
+	{
+		ImGui::EndCombo;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("press", { 50, 30 }))
+	{
+		if (var == 0)
+		{
+			Sphere sphere = { { 1,1,1,1 } ,{ 0,0,0 }, 10,"SPHERE" };
+			spheres.emplace_back(sphere);
+
+		}
+		if (var == 1)
+		{
+			Cuboid cuboid = { {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},5.0f,5.0f,5.0f };
+			cuboids.emplace_back(cuboid);
+
+		}
+	}
+	if (ImGui::Button("Play", { 50, 30 }))
+	{
+		timer = 0;
+		play = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Stop", { 50, 30 }))
+	{
+		play = false;
+	}
+	if (timer > 60)
+	{
+		timer = 60;
+		play = false;
+	}
+	ImGui::SliderFloat("timer", &timer, 0, 60);
+	if (play)
+		timer += elapsed_time*20;
+
+	ImGui::InputInt("index", &index);
+	for (int i=0;i<spheres.size();i++)
+	{
+		if (i == index)
+		{
+			if (play)
+				spheres[i].position.x += elapsed_time * 20;
+			ImGui::SliderFloat3("Position", &spheres[i].position.x, -30.0f, 30.0f);
+			ImGui::ColorEdit4("Color", &spheres[i].color.x);
+			ImGui::SliderFloat("Radius", &spheres[i].radius, 1, 30);
+
+		}
+
+	}
+
+	if (ImGui::Button("Clear", { 50, 30 }))
+	{
+		spheres.clear();
+		cuboids.clear();
+	}
 	ImGui::End();
 	fog->DrawDebugGui();
 }
@@ -49,12 +88,10 @@ void SceneGame::Render()
 	Graphics& graphics = Graphics::GetInstance();
 
 	//Get Device context
-
 	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
 	ID3D11RenderTargetView* rtv = graphics.GetRenderTargetView();
 	ID3D11DepthStencilView* dsv = graphics.GetDepthStencilView();
 	
-
 	//Screen clear and set render target view
 	FLOAT color[] = { 0.5f, 0.5f, 0.5f, 0.0f };	// RGBA(0.0`1.0)
 	dc->ClearRenderTargetView(rtv, color);
@@ -70,28 +107,22 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 	LightManager::Instance().PushRenderContext(rc);
-	//fog->pushRenderContext(rc);
-	//graphics.GetSkyBox()->Render(rc);
 	//
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid({ 0.0f,-30.0f,0.0f }, 1000, 10, 1000, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f,1.0f });
-	//
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, 10.0f, { 1.0f,0.0f,0.0f,1.0f });
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(earth.position, earth.radius, earth.color);
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(moon.position, moon.radius, moon.color);
-	//graphics.GetGeometricPrimitive()->DrawPrimitiveSphere({ sphere.position.x + 4*range * cosf(angle) ,sphere.position.y ,sphere.position.z + 4*range * sinf(angle) }, 2, sphere.color);
-	//DrawGrid();
-	//graphics.GetGeometricPrimitive()->Render(rc);
-	//graphics.GetLineRenderer()->Render(rc);
-	//LightManager::Instance().DrawDebugPrimitive();
-	//graphics.GetDebugRenderer()->Render(rc);
+	for (const auto& sphere : spheres)
+	{
+		graphics.GetGeometricPrimitive()->DrawPrimitiveSphere(sphere.position, sphere.radius, sphere.color);
+	}
+	for (const auto& cuboid : cuboids)
+	{
+		graphics.GetGeometricPrimitive()->DrawPrimitiveCuboid(cuboid.position, cuboid.length, cuboid.width, cuboid.height, cuboid.angle, cuboid.color);
+	}
 
-	player->Render(rc);
-	//stage->Render(rc);
-	//sword->Render(rc);
-	//jammo->Render(rc);
-	//sprite[0]->Render(dc,0,0,100,108);
-	//sprite[1]->Render(dc,0,0,1960,1080);
+	graphics.GetGeometricPrimitive()->Render(rc);
+
+	SpriteShader* shader = graphics.GetShader(ShaderId::defaultSpriteShader);
+	shader->Begin(rc);
+	shader->Render(rc, sprite.get());
+	shader->End(rc);
 }
 void SceneGame::Finalize()
 {

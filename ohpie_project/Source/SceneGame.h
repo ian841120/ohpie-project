@@ -1,6 +1,8 @@
 #pragma once
 #include "Graphics\Sprite.h"
+#include "Graphics\Texture.h"
 #include <memory>
+
 #include "Graphics\Light.h"
 #include "Graphics\Fog.h"
 #include "Graphics\Model.h"
@@ -18,10 +20,7 @@ private:
 	void DrawDebugGUI();
 private:
 	std::unique_ptr<Sprite> sprite[2];
-	std::unique_ptr<Model> player;
-	std::unique_ptr<Model> stage;
-	std::unique_ptr<Model> sword;
-	std::unique_ptr<Model> jammo;
+	
 	struct Cuboid
 	{
 		DirectX::XMFLOAT4 color;
@@ -44,18 +43,28 @@ private:
 		DirectX::XMFLOAT4	color;
 		DirectX::XMFLOAT3	position;
 		float				radius;
+		std::string			str;
 	};
-	
+	std::vector<Sphere> spheres;
+	std::vector<Cuboid> cuboids;
 private:
+	std::unique_ptr<Sprite> sprite;
+	std::unique_ptr<Texture> texture;
 	std::unique_ptr<Fog>	fog;
 	Cuboid		cuboid{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},5.0f,5.0f,5.0f };
 	Cylinder	cylinder{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f} ,{0.0f,0.0f,0.0f},5.0f,5.0f };
 	Sphere		sphere{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},5.0f };
-	Sphere		earth{};
-	Sphere		moon{};
 	DirectX::XMFLOAT4 white{ 1.0f,1.0f,1.0f,1.0f };
 	
 	float timer = 0;
 	float angle = 0;
 	float range = 50;
+
+	bool play;
+	// combo 
+	int var;
+	// separated_by_zeros
+	const char* name = { "a\0b\0c\0d" };
+
+	int index = 0;
 };

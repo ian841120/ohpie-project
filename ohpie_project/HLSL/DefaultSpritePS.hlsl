@@ -1,4 +1,4 @@
-#include "Sprite.hlsli"
+#include "DefaultSprite.hlsli"
 Texture2D texture2d : register(t0);
 SamplerState samplerState : register(s0);
 
