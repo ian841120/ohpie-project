@@ -12,6 +12,7 @@
 enum class ShaderId
 {
 	defaultSpriteShader,
+	maskShader,
 	max,
 };
 class Graphics

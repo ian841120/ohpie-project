@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include "DefaultSpriteShader.h"
+#include "MaskShader.h"
 Graphics* Graphics::instance = nullptr;
 Graphics::Graphics(HWND hwnd)
 {
@@ -86,5 +87,6 @@ Graphics::Graphics(HWND hwnd)
 	//Sprite shader
 	{
 		spriteShaders[static_cast<int>(ShaderId::defaultSpriteShader)] = std::make_unique<DefaultSpriteShader>();
+		spriteShaders[static_cast<int>(ShaderId::maskShader)] = std::make_unique<MaskShader>();
 	}
 }

@@ -15,12 +15,19 @@ public:
 	void Finalize();
 	void Update(float elapsed_time);
 	void Render();
+	
 private:
 	void DrawGrid();
 	void DrawDebugGUI();
+	void DrawTextureDebugGUI();
 private:
-	std::unique_ptr<Sprite> sprite[2];
-	
+	//std::unique_ptr<Sprite> sprite[2];
+	enum class TextureName
+	{
+		cyberpunk,
+		nanachi,
+		max,
+	};
 	struct Cuboid
 	{
 		DirectX::XMFLOAT4 color;
@@ -48,8 +55,9 @@ private:
 	std::vector<Sphere> spheres;
 	std::vector<Cuboid> cuboids;
 private:
-	std::unique_ptr<Sprite> sprite;
-	std::unique_ptr<Texture> texture;
+	std::unique_ptr<Texture> maskTexture;
+	std::unique_ptr<Sprite> sprite[2];
+	std::unique_ptr<Texture> texture[2];
 	std::unique_ptr<Fog>	fog;
 	Cuboid		cuboid{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f},5.0f,5.0f,5.0f };
 	Cylinder	cylinder{ {1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f} ,{0.0f,0.0f,0.0f},5.0f,5.0f };
@@ -67,4 +75,17 @@ private:
 	const char* name = { "a\0b\0c\0d" };
 
 	int index = 0;
+
+	//Sprite
+	int spriteCount = 0;
+	// texture
+	int textureCount = 0;
+	bool DrawTexture = false;
+
+	//maskData
+	float dissolveThreshold;
+	float edgeThreshold;
+	DirectX::XMFLOAT4 edgeColor;
+	bool playDissolve = false;
+
 };

@@ -51,4 +51,7 @@ void DefaultSpriteShader::End(const RenderContext& rc)
 	rc.deviceContext->PSSetShader(nullptr, nullptr, 0);
 	rc.deviceContext->IASetInputLayout(nullptr);
 
+	ID3D11ShaderResourceView* srv = { nullptr };
+	rc.deviceContext->PSSetShaderResources(0, 1, &srv);
+
 }

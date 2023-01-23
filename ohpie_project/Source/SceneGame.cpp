@@ -9,13 +9,17 @@ void SceneGame::Initialize()
 {
 	LightManager::Instance().Register(new Light(Light::LIGHTTYPE::directional));
 
-	sprite = std::make_unique<Sprite>();
-	texture = std::make_unique<Texture>("./Data/Image/cyberpunk.jpg");
-	sprite->SetShaderResourceView(texture->GetSRV(), texture->GetWidth(), texture->GetHeight());
+	sprite[0] = std::make_unique<Sprite>();
+	texture[static_cast<int>(TextureName::cyberpunk)] = std::make_unique<Texture>("./Data/Image/Title.png");
+	texture[static_cast<int>(TextureName::nanachi)] = std::make_unique<Texture>("./Data/Image/nanachi.jpg");
+	maskTexture = std::make_unique<Texture>("./Data/Image/febucci-dissolve-texture-example.jpg");
+	dissolveThreshold = 1.0f;
+	edgeThreshold = 0.2f;
+	edgeColor = { 1.0f,0.0f,0.0f,1.0f };
 }
 void SceneGame::Update(float elapsed_time)
 {
-	sprite->Update(100, 100, 500, 500);
+	sprite[0]->Update(100, 100, 500, 500);
 
 
 	ImGui::Begin("GeoCreater");
@@ -23,7 +27,7 @@ void SceneGame::Update(float elapsed_time)
 	
 	if(ImGui::Combo("test", &var, name))
 	{
-		ImGui::EndCombo;
+		//ImGui::EndCombo();
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("press", { 50, 30 }))
@@ -80,6 +84,9 @@ void SceneGame::Update(float elapsed_time)
 		spheres.clear();
 		cuboids.clear();
 	}
+	// TextureDebugGui
+	DrawTextureDebugGUI();
+
 	ImGui::End();
 	fog->DrawDebugGui();
 }
@@ -103,6 +110,7 @@ void SceneGame::Render()
 	
 	RenderContext rc;
 	rc.deviceContext = dc;
+
 	rc.viewPosition = { camera.GetEye().x,camera.GetEye().y,camera.GetEye().z,1.0f };
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
@@ -119,10 +127,19 @@ void SceneGame::Render()
 
 	graphics.GetGeometricPrimitive()->Render(rc);
 
-	SpriteShader* shader = graphics.GetShader(ShaderId::defaultSpriteShader);
-	shader->Begin(rc);
-	shader->Render(rc, sprite.get());
-	shader->End(rc);
+	SpriteShader* shader = graphics.GetShader(ShaderId::maskShader);
+	sprite[spriteCount]->SetShaderResourceView(texture[textureCount]->GetSRV(), texture[textureCount]->GetWidth(), texture[textureCount]->GetHeight());
+	if (DrawTexture)
+	{
+		shader->Begin(rc);
+		rc.maskData.dissolveThreshold = dissolveThreshold;
+		rc.maskData.edgeThreshold = edgeThreshold;
+		rc.maskData.edgeColor = edgeColor;
+		rc.maskData.maskTexture = maskTexture->GetSRV().Get();
+		shader->Render(rc, sprite[0].get());
+		shader->End(rc);
+
+	}
 }
 void SceneGame::Finalize()
 {
@@ -189,5 +206,43 @@ void SceneGame::DrawDebugGUI()
 			ImGui::TreePop();
 		}
 	}
+
+}
+void SceneGame::DrawTextureDebugGUI()
+{
+	ImGui::Begin("Texture");
+	ImGui::Checkbox("DrawTexture", &DrawTexture);
+	
+	ImGui::RadioButton(texture[0]->GetTextureName().c_str(), &textureCount, 0);
+	ImGui::RadioButton(texture[1]->GetTextureName().c_str(), &textureCount, 1);
+
+	
+	if (ImGui::TreeNode("Mask"))
+	{
+		if (ImGui::Button("Play", { 50, 30 }))
+		{
+			dissolveThreshold = 1.0f;
+			playDissolve = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Stop", { 50, 30 }))
+		{
+			playDissolve = false;
+		}
+		if (dissolveThreshold<0)
+		{
+			dissolveThreshold = 0;
+			playDissolve = false;
+		}
+		if (playDissolve)
+			dissolveThreshold -= 0.01f;
+
+		ImGui::SliderFloat("Dissolve Threshold", &dissolveThreshold, 0.0f, 1.0f);
+		ImGui::SliderFloat("Edge Threshold", &edgeThreshold, 0.0f, 1.0f);
+		ImGui::ColorEdit4("Edge Color", &edgeColor.x);
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
 
 }

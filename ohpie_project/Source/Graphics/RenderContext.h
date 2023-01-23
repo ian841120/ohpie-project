@@ -21,7 +21,14 @@ struct PointLightData
 	DirectX::XMFLOAT3	dummy;
 };
 static constexpr int PointLightMax = 8;
+struct MaskData
+{
+	ID3D11ShaderResourceView* maskTexture;
+	float dissolveThreshold;
+	float edgeThreshold;
+	DirectX::XMFLOAT4 edgeColor;
 
+};
 struct RenderContext
 {
 	
@@ -37,5 +44,7 @@ struct RenderContext
 	int						pointLightCount = 0;
 	//Fog
 	FogData					fogData;
+	//MaskData
+	MaskData				maskData;
 	
 };
