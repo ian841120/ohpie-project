@@ -18,7 +18,7 @@ struct PointLightData
 	DirectX::XMFLOAT4	position;
 	DirectX::XMFLOAT4	color;
 	float				range;
-	DirectX::XMFLOAT3	dummy;
+	DirectX::XMFLOAT3	padding;
 };
 static constexpr int PointLightMax = 8;
 struct MaskData
@@ -29,6 +29,12 @@ struct MaskData
 	DirectX::XMFLOAT4 edgeColor;
 
 };
+
+struct SkySimulationData
+{
+
+};
+
 struct RenderContext
 {
 	

@@ -177,6 +177,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="HLSL\AtmosphericShader.hlsli" />
     <None Include="HLSL\DebugRenderer.hlsli" />
     <None Include="HLSL\Fog.hlsli" />
     <None Include="HLSL\GeometricPrimitive.hlsli" />
@@ -188,6 +189,12 @@
     <None Include="HLSL\DefaultSprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="HLSL\AtmosphericShaderPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="HLSL\DebugRendererPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -285,6 +292,7 @@
     <ClInclude Include="Source\CameraController.h" />
     <ClInclude Include="Source\CpuTimer.h" />
     <ClInclude Include="Source\Framework.h" />
+    <ClInclude Include="Source\Graphics\AtmosphericShader.h" />
     <ClInclude Include="Source\Graphics\DebugRenderer.h" />
     <ClInclude Include="Source\Graphics\DefaultSpriteShader.h" />
     <ClInclude Include="Source\Graphics\Fog.h" />
@@ -320,6 +328,7 @@
     <ClCompile Include="Source\CameraController.cpp" />
     <ClCompile Include="Source\CpuTimer.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
+    <ClCompile Include="Source\Graphics\AtmosphericShader.cpp" />
     <ClCompile Include="Source\Graphics\DebugRenderer.cpp" />
     <ClCompile Include="Source\Graphics\DefaultSpriteShader.cpp" />
     <ClCompile Include="Source\Graphics\Fog.cpp" />

@@ -75,6 +75,9 @@
     <None Include="HLSL\MaskShader.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\AtmosphericShader.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\DefaultSpriteShaderPS.hlsl">
@@ -117,6 +120,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\MaskShaderVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\AtmosphericShaderPS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
@@ -229,6 +235,9 @@
     <ClInclude Include="Source\Graphics\MaskShader.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\AtmosphericShader.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -328,6 +337,9 @@
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\MaskShader.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\AtmosphericShader.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

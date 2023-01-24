@@ -16,6 +16,7 @@ void SceneGame::Initialize()
 	dissolveThreshold = 1.0f;
 	edgeThreshold = 0.2f;
 	edgeColor = { 1.0f,0.0f,0.0f,1.0f };
+
 }
 void SceneGame::Update(float elapsed_time)
 {

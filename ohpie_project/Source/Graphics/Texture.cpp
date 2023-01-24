@@ -8,8 +8,7 @@ Texture::Texture(const char* filename)
 	HRESULT hr;
 
 	std::string str = filename;
-	textureName = str.substr(str.find_last_of("/\\"));
-	textureName.erase(0,1);
+	textureName = str.substr(str.find_last_of("/\\")+1);
 
 	std::wstring wfilename= std::wstring(str.begin(), str.end());
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
