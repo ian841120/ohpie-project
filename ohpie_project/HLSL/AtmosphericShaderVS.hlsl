@@ -2,6 +2,6 @@
 VS_OUT main( float4 position : POSITION )
 {
     VS_OUT vout;
-    vout.position = position;
+    vout.position = mul(position, mul(world, view_project));
     return vout;
 }

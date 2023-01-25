@@ -29,10 +29,9 @@ private:
 	};
 	struct CbSky
 	{
-		DirectX::XMFLOAT3 viewPosition;		// camera position
-		float cameraHeight;					// camera height
-		DirectX::XMFLOAT3 lightPosition;	// light position(direction)
-		float cameraHeight2;				// cameraheight^2
+		DirectX::XMFLOAT4X4 world;
+		DirectX::XMFLOAT4X4	view_project;
+		DirectionLightData directionLightData;	// light position(direction)
 
 
 

@@ -23,7 +23,7 @@ AtmosphericShader::AtmosphericShader()
 	_ASSERT_EXPR(SUCCEEDED(hr), L"FAIL");
 
 
-	createDome({ 0.0f,0.0f,0.0f }, 10.0f, 16, 16);
+	createDome({ 0.0f,0.0f,0.0f }, 1.0f, 100, 100);
 
 }
 void AtmosphericShader::Render(const RenderContext& rc)
@@ -44,7 +44,20 @@ void AtmosphericShader::Render(const RenderContext& rc)
 	rc.deviceContext->OMSetDepthStencilState(RenderStates::depthStencilStates[static_cast<int>(RenderStates::DSS::ZT_ON_ZW_ON)].Get(), 0);
 	rc.deviceContext->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_SOLID)].Get());
 
+	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&rc.view);
+	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&rc.projection);
+	DirectX::XMMATRIX VP = V * P;
 
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1000, 1000, 1000);
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(0,0,0);
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0, 0, 0);
+	DirectX::XMMATRIX W = S * R * T;
+
+	CbSky cbSky;
+	DirectX::XMStoreFloat4x4(&cbSky.view_project, VP);
+	DirectX::XMStoreFloat4x4(&cbSky.world, W);
+	cbSky.directionLightData = rc.directionLightData;
+	rc.deviceContext->UpdateSubresource(skyCbuffer.Get(), 0, 0, &cbSky, 0, 0);
 
 	UINT stride{ sizeof(Vertex) };
 	UINT offset{ 0 };

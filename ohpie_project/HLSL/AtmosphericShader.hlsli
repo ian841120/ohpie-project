@@ -30,15 +30,22 @@ static const float3 invWaveLength = 1.0 / pow(three_primary_color, 4.0);
 
 static const int samples = 2;
 
+struct DirectionalLightData
+{
+    float4 direction; 
+    float4 color; 
+};
+
+
 struct VS_OUT
 {
     float4 position : SV_POSITION;
 };
 cbuffer CbSky
 {
-    float4 worldCameraPos;
     row_major float4x4 world;
-    float4 lightdirection;
+    row_major float4x4 view_project;
+    DirectionalLightData directionalLightData;
 
 };
 //When scale depth is 0.25 and the ratio of atmosphere thick to center radius is 2.5%
@@ -47,4 +54,13 @@ float IntegralApproximation(float cos)
 {
     float x = 1.0 - cos;
     return scaleDepth * exp(-0.00287 + x * (0.459 + x * (3.83 + x * (-6.80 + x * 5.25))));
+}
+
+float3 IntersectionPos(float3 dir, float3 a, float radius)
+{
+    float b = dot(a, dir);
+    float c = dot(a, a) - radius * radius;
+    float d = max(b * b - c, 0.0);
+
+    return a + dir * (-b + sqrt(d));
 }
