@@ -127,7 +127,7 @@ void SceneGame::Render()
 	}
 
 	graphics.GetGeometricPrimitive()->Render(rc);
-
+	graphics.GetAtmosphericShader()->Render(rc);
 	SpriteShader* shader = graphics.GetShader(ShaderId::maskShader);
 	sprite[spriteCount]->SetShaderResourceView(texture[textureCount]->GetSRV(), texture[textureCount]->GetWidth(), texture[textureCount]->GetHeight());
 	if (DrawTexture)

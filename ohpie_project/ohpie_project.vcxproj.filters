@@ -125,6 +125,9 @@
     <FxCompile Include="HLSL\AtmosphericShaderPS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\AtmosphericShaderVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui\imconfig.h">

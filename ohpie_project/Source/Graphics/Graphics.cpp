@@ -82,6 +82,7 @@ Graphics::Graphics(HWND hwnd)
 		geometricPrimitive = std::make_unique<GeometricPrimitive>(device.Get());
 		lineRenderer = std::make_unique<LineRenderer>(device.Get(), 1024);
 		skyBox = std::make_unique<Skybox>(device.Get());
+		atmosphericShader = std::make_unique<AtmosphericShader>();
 		renderStates = std::make_unique<RenderStates>(device.Get());
 	}
 	//Sprite shader

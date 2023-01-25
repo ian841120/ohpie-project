@@ -9,6 +9,7 @@
 #include "RenderContext.h"
 #include "RenderStates.h"
 #include "Shader.h"
+#include "AtmosphericShader.h"
 enum class ShaderId
 {
 	defaultSpriteShader,
@@ -36,6 +37,7 @@ public:
 	LineRenderer*			GetLineRenderer()const { return lineRenderer.get(); }
 	Skybox*					GetSkyBox()const { return skyBox.get(); }
 	SpriteShader*			GetShader(ShaderId id)const { return spriteShaders[static_cast<int>(id)].get(); }
+	AtmosphericShader*		GetAtmosphericShader()const { return atmosphericShader.get(); }
 private:
 	static Graphics*								instance;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -51,7 +53,7 @@ private:
 	std::unique_ptr<LineRenderer>					lineRenderer;
 	std::unique_ptr<Skybox>							skyBox;
 	std::unique_ptr<RenderStates>					renderStates;
-
+	std::unique_ptr<AtmosphericShader>				atmosphericShader;
 	std::unique_ptr<SpriteShader>					spriteShaders[static_cast<int>(ShaderId::max)];
 	float screenWidth;
 	float screenHeight;
