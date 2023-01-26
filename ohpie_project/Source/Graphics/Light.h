@@ -31,7 +31,7 @@ private:
 	// Light Position
 	DirectX::XMFLOAT3	position{ 0.0f,0.0f,0.0f };
 	// Light Direction 
-	DirectX::XMFLOAT3	direction{ 0.0f,-1.0f,-1.0f };
+	DirectX::XMFLOAT3	direction{ 0.0f,-1.0f,5000.0f };
 	// Light Color
 	DirectX::XMFLOAT4	color{ 1.0f,1.0f,1.0f,1.0f };
 	LIGHTTYPE lightType = LIGHTTYPE::directional;

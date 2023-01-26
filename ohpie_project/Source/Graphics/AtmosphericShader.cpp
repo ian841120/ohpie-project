@@ -49,14 +49,15 @@ void AtmosphericShader::Render(const RenderContext& rc)
 	DirectX::XMMATRIX VP = V * P;
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1000, 1000, 1000);
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(0,0,0);
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0, 0, 0);
-	DirectX::XMMATRIX W = S * R * T;
+	///DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(0,0,0);
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(rc.viewPosition.x, rc.viewPosition.y, rc.viewPosition.z);
+	DirectX::XMMATRIX W = S * T;
 
 	CbSky cbSky;
 	DirectX::XMStoreFloat4x4(&cbSky.view_project, VP);
 	DirectX::XMStoreFloat4x4(&cbSky.world, W);
 	cbSky.directionLightData = rc.directionLightData;
+	cbSky.cameraPosition = rc.viewPosition;
 	rc.deviceContext->UpdateSubresource(skyCbuffer.Get(), 0, 0, &cbSky, 0, 0);
 
 	UINT stride{ sizeof(Vertex) };

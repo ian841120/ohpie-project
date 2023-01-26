@@ -1,9 +1,10 @@
 #include "AtmosphericShader.hlsli"
 float4 main(VS_OUT pin) : SV_TARGET
 {
-    float3 worldPos = pin.position.xyz;
-    worldPos = IntersectionPos(normalize(worldPos), float3(0.0, innerRadius, 0.0), outerRadius);
+    float3 worldPos = pin.worldPosition.xyz;
+    worldPos = IntersectionPos(float3(0.0, innerRadius, 0.0), normalize(worldPos), outerRadius);
     float3 cameraPos = float3(0.0, innerRadius, 0.0);
+    
     float3 lightDir = normalize(directionalLightData.direction.xyz);
     float3 ray = worldPos - cameraPos;
     float far = length(ray);
@@ -43,7 +44,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     float miePhase = (3 * (1 - g2) * (1 + cos2)) / (2 * (2 + g2) * pow(abs((1 + g2 - 2 * g2 * cos2)), 1.5));
     //rayPhase---> when g=0;
     float rayLeighPhase = 0.75 * (1 + cos2);
+    float3 raycolor = (c0 * rayLeighPhase).xyz;
+    float3 miecolor = (c1 * miePhase).xyz;
 
+    float3 c = float3(1.0, 1.0, 1.0) - exp(-exposure * (raycolor + miecolor));
     float3 sky = c0 * rayLeighPhase + c1 * miePhase;
-    return float4(directionalLightData.color.xyz * sky, directionalLightData.color.a);
+    return float4(sky, 1.0);
 }
+

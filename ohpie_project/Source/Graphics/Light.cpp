@@ -18,7 +18,9 @@ void Light::DrawDebugGUI()
 		switch (lightType)
 		{
 		case LIGHTTYPE::directional:
-			ImGui::SliderFloat3("Direction", &direction.x, -30.0f, 30.0f);
+			
+			//direction.y += 5.0f;
+			ImGui::SliderFloat3("Direction", &direction.x, -5000.0f, 5000.0f);
 			ImGui::ColorEdit4("Color", &color.x);
 			break;
 		case LIGHTTYPE::point:

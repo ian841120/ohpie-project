@@ -32,7 +32,7 @@ private:
 		DirectX::XMFLOAT4X4 world;
 		DirectX::XMFLOAT4X4	view_project;
 		DirectionLightData directionLightData;	// light position(direction)
-
+		DirectX::XMFLOAT4	cameraPosition;
 
 
 	};

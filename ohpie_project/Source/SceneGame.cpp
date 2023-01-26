@@ -16,7 +16,7 @@ void SceneGame::Initialize()
 	dissolveThreshold = 1.0f;
 	edgeThreshold = 0.2f;
 	edgeColor = { 1.0f,0.0f,0.0f,1.0f };
-
+	//spheres.emplace_back(sun);
 }
 void SceneGame::Update(float elapsed_time)
 {
@@ -115,7 +115,10 @@ void SceneGame::Render()
 	rc.viewPosition = { camera.GetEye().x,camera.GetEye().y,camera.GetEye().z,1.0f };
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
+	
 	LightManager::Instance().PushRenderContext(rc);
+	graphics.GetAtmosphericShader()->Render(rc);
+
 	//
 	for (const auto& sphere : spheres)
 	{
@@ -127,7 +130,6 @@ void SceneGame::Render()
 	}
 
 	graphics.GetGeometricPrimitive()->Render(rc);
-	graphics.GetAtmosphericShader()->Render(rc);
 	SpriteShader* shader = graphics.GetShader(ShaderId::maskShader);
 	sprite[spriteCount]->SetShaderResourceView(texture[textureCount]->GetSRV(), texture[textureCount]->GetWidth(), texture[textureCount]->GetHeight());
 	if (DrawTexture)
@@ -141,6 +143,8 @@ void SceneGame::Render()
 		shader->End(rc);
 
 	}
+	SceneGame::DrawGrid();
+	graphics.GetLineRenderer()->Render(rc);
 }
 void SceneGame::Finalize()
 {
