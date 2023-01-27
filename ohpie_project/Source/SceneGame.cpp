@@ -220,6 +220,13 @@ void SceneGame::DrawTextureDebugGUI()
 	
 	ImGui::RadioButton(texture[0]->GetTextureName().c_str(), &textureCount, 0);
 	ImGui::RadioButton(texture[1]->GetTextureName().c_str(), &textureCount, 1);
+	if (ImGui::TreeNode("Shadowmap"))
+	{
+		ImGui::Text("texture");
+		ImGui::Image(texture[1]->GetSRV().Get(), { 256, 256 }, { 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
+
+		ImGui::TreePop();
+	}
 
 	
 	if (ImGui::TreeNode("Mask"))

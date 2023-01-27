@@ -310,6 +310,7 @@
     <ClInclude Include="Source\Graphics\LineRenderer.h" />
     <ClInclude Include="Source\Graphics\MaskShader.h" />
     <ClInclude Include="Source\Graphics\Model.h" />
+    <ClInclude Include="Source\Graphics\PerlinNoise.h" />
     <ClInclude Include="Source\Graphics\RenderContext.h" />
     <ClInclude Include="Source\Graphics\RenderStates.h" />
     <ClInclude Include="Source\Graphics\Shader.h" />
@@ -346,6 +347,7 @@
     <ClCompile Include="Source\Graphics\LineRenderer.cpp" />
     <ClCompile Include="Source\Graphics\MaskShader.cpp" />
     <ClCompile Include="Source\Graphics\Model.cpp" />
+    <ClCompile Include="Source\Graphics\PerlinNoise.cpp" />
     <ClCompile Include="Source\Graphics\RenderStates.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Skybox.cpp" />
