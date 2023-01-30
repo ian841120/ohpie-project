@@ -5,6 +5,7 @@
 #include "Graphics\LightManager.h"
 
 #include <Windows.h>
+
 void SceneGame::Initialize()
 {
 	LightManager::Instance().Register(new Light(Light::LIGHTTYPE::directional));
@@ -17,6 +18,7 @@ void SceneGame::Initialize()
 	edgeThreshold = 0.2f;
 	edgeColor = { 1.0f,0.0f,0.0f,1.0f };
 	//spheres.emplace_back(sun);
+	terrain = std::make_unique<Terrain>();
 }
 void SceneGame::Update(float elapsed_time)
 {
@@ -145,6 +147,7 @@ void SceneGame::Render()
 	}
 	SceneGame::DrawGrid();
 	graphics.GetLineRenderer()->Render(rc);
+	terrain->Render(rc);
 }
 void SceneGame::Finalize()
 {
@@ -223,7 +226,7 @@ void SceneGame::DrawTextureDebugGUI()
 	if (ImGui::TreeNode("Shadowmap"))
 	{
 		ImGui::Text("texture");
-		ImGui::Image(texture[1]->GetSRV().Get(), { 256, 256 }, { 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
+		ImGui::Image(texture[textureCount]->GetSRV().Get(), { 256, 256 }, { 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
 
 		ImGui::TreePop();
 	}

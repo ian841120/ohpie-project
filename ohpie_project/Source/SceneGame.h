@@ -6,6 +6,8 @@
 #include "Graphics\Light.h"
 #include "Graphics\Fog.h"
 #include "Graphics\Model.h"
+
+#include "Graphics\Terrain.h"
 class SceneGame
 {
 public:
@@ -88,4 +90,5 @@ private:
 	DirectX::XMFLOAT4 edgeColor;
 	bool playDissolve = false;
 
+	std::unique_ptr<Terrain> terrain;
 };

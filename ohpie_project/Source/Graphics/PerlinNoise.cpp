@@ -96,5 +96,16 @@ double PerlinNoise::grad(int hash, double x, double y, double z)
 }
 double PerlinNoise::OctavePerlin(double x, double y, double z, int octaves, double persistence)
 {
-	return 0;
+	double total = 0;
+	double frequency = 1;
+	double amplitude = 1;
+	double maxValue = 0;
+	for (int i = 0; i < octaves; i++)
+	{
+		total += Create3DNoise(x * frequency, y * frequency, y * frequency) * amplitude;
+		maxValue += amplitude;
+		amplitude *= persistence;
+		frequency *= 2;
+	}
+	return total / maxValue;
 }

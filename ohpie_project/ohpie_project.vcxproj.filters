@@ -78,6 +78,9 @@
     <None Include="HLSL\AtmosphericShader.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="HLSL\Terrain.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\DefaultSpriteShaderPS.hlsl">
@@ -126,6 +129,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\AtmosphericShaderVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\TerrainVS.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\TerrainPS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
@@ -244,6 +253,9 @@
     <ClInclude Include="Source\Graphics\PerlinNoise.h">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\Terrain.h">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -349,6 +361,9 @@
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\PerlinNoise.cpp">
+      <Filter>ソース ファイル\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Terrain.cpp">
       <Filter>ソース ファイル\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

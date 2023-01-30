@@ -187,6 +187,7 @@
     <None Include="HLSL\Model.hlsli" />
     <None Include="HLSL\Skybox.hlsli" />
     <None Include="HLSL\DefaultSprite.hlsli" />
+    <None Include="HLSL\Terrain.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\AtmosphericShaderPS.hlsl">
@@ -281,6 +282,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="HLSL\TerrainPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\TerrainVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\Assimp\include\assimp\config.h" />
@@ -316,6 +329,7 @@
     <ClInclude Include="Source\Graphics\Shader.h" />
     <ClInclude Include="Source\Graphics\Skybox.h" />
     <ClInclude Include="Source\Graphics\Sprite.h" />
+    <ClInclude Include="Source\Graphics\Terrain.h" />
     <ClInclude Include="Source\Graphics\Texture.h" />
     <ClInclude Include="Source\Input\InputClass.h" />
     <ClInclude Include="Source\Input\KeyboardClass.h" />
@@ -352,6 +366,7 @@
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Skybox.cpp" />
     <ClCompile Include="Source\Graphics\Sprite.cpp" />
+    <ClCompile Include="Source\Graphics\Terrain.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Input\InputClass.cpp" />
     <ClCompile Include="Source\Input\KeyboardClass.cpp" />
