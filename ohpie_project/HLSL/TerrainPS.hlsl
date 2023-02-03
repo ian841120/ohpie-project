@@ -1,5 +1,5 @@
 #include "Terrain.hlsli"
-float4 main() : SV_TARGET
+float4 main(VS_OUT pin) : SV_TARGET
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    return float4(1.0f * pin.world_position.y, 1.0f * pin.world_position.y, 1.0f * pin.world_position.y, 1.0f);
 }

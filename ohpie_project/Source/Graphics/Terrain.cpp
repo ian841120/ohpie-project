@@ -23,7 +23,48 @@ Terrain::Terrain()
 	desc.StructureByteStride = 0;
 	HRESULT hr = device->CreateBuffer(&desc, nullptr, constantBuffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), L"FAIL");
-	CreateMesh(50,50);
+	CreateMesh(width, height);
+}
+void Terrain::Update()
+{
+	ID3D11DeviceContext* dc = Graphics::GetInstance().GetDeviceContext();
+	std::vector<Vertex> temp;
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			Vertex vertex;
+			vertex.position.x = static_cast<float>(j);
+			float e = perlinNoise.OctavePerlin(j/float(width),i/float(height), octaves, persistence);
+			vertex.position.y = static_cast<float>(e)*h;
+			vertex.position.z = static_cast<float>(i);
+			temp.emplace_back(vertex);
+		}
+
+	}
+
+	HRESULT hr{ S_OK };
+	//Edit vertex data 
+	D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
+	hr = dc->Map(vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
+	_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to Mapping");
+	Vertex* vertices{ reinterpret_cast<Vertex*>(mapped_subresource.pData) };
+	if (vertices != nullptr)
+	{
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++ )
+			{
+				vertices[i * width + j].position.x = temp[i * width + j].position.x;
+				vertices[i * width + j].position.y = temp[i * width + j].position.y;
+				vertices[i * width + j].position.z = temp[i * width + j].position.z;
+			}
+			
+		}
+	}
+	dc->Unmap(vertexBuffer.Get(), 0);
+
+
 }
 void Terrain::CreateMesh(int width, int height)
 {
@@ -38,7 +79,8 @@ void Terrain::CreateMesh(int width, int height)
 		{
 			Vertex vertex;
 			vertex.position.x = static_cast<float>(j);
-			vertex.position.y = perlinNoise.OctavePerlin(i*0.001,j*0.005, 1, 5, 0.002);
+			double e = perlinNoise.OctavePerlin(j+0.01f, i+0.05f, 4, 5.0f);
+			vertex.position.y = static_cast<float>(e);
 			vertex.position.z = static_cast<float>(i);
 			vertices.emplace_back(vertex);
 		}
@@ -65,9 +107,9 @@ void Terrain::CreateMesh(int width, int height)
 	{
 		D3D11_BUFFER_DESC buffer_desc{};
 		buffer_desc.ByteWidth = static_cast<UINT>(vertices.size() * sizeof(Vertex));
-		buffer_desc.Usage = D3D11_USAGE_DEFAULT;
+		buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
 		buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		buffer_desc.CPUAccessFlags = 0;
+		buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;;
 		buffer_desc.MiscFlags = 0;
 		buffer_desc.StructureByteStride = 0;
 		D3D11_SUBRESOURCE_DATA subresource_data{};
@@ -99,7 +141,7 @@ void Terrain::Render(const RenderContext& rc)
 	const float blend_factor[4] = { 1.0f,1.0f,1.0f,1.0f };
 	rc.deviceContext->OMSetBlendState(RenderStates::blendStates[static_cast<int>(RenderStates::BS::ALPHA)].Get(), blend_factor, 0xFFFFFFFF);
 	rc.deviceContext->OMSetDepthStencilState(RenderStates::depthStencilStates[static_cast<int>(RenderStates::DSS::ZT_ON_ZW_ON)].Get(), 0);
-	rc.deviceContext->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_WIREFRAME)].Get());
+	rc.deviceContext->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_SOLID)].Get());
 
 	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&rc.view);
 	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&rc.projection);
@@ -118,4 +160,16 @@ void Terrain::Render(const RenderContext& rc)
 	rc.deviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	rc.deviceContext->DrawIndexed(indexCount, 0, 0);
 
+}
+
+void Terrain::DebugGUI()
+{
+	ImGui::Begin("PerlinNoise");
+	ImGui::SliderInt("octaves", &octaves, 1, 30);
+	ImGui::SliderFloat("persistence", &persistence, 0.01f, 1.0f);
+	ImGui::SliderFloat("Height", &h, 1.0f, 500.0f);
+	ImGui::SliderFloat("NANIKA", &nanika, 0.01f, 1.0f);
+	ImGui::End();
+
+		
 }

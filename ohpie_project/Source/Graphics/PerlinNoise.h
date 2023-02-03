@@ -23,14 +23,18 @@ class PerlinNoise
 public:
 	PerlinNoise();
 	~PerlinNoise() {};
-	double Create3DNoise(double x, double y, double z);
-	double OctavePerlin(double x, double y, double z, int octaves, double persistence);
+	float CreateNoise(float x, float y, float z);
+	float CreateNoise(float x, float y);
+	float OctavePerlin(float x, float y, float z, int octaves, float persistence);
+	float PerlinNoise::OctavePerlin(float x, float y, int octaves, float persistence);
+
 private:
     
-	double fade(double t);
-	double lerp(double a, double b, double t);
+	float fade(float t);
+	float lerp(float a, float b, float t);
 	int inc(int num);
-	double grad(int hash, double x, double y, double z);
+	float grad(int hash, float x, float y, float z);
+	float grad(int hash, float x, float y);
 private:
 	std::vector<int> p;
 	int repeat = -1;
