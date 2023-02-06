@@ -23,7 +23,7 @@ void SceneGame::Initialize()
 void SceneGame::Update(float elapsed_time)
 {
 	sprite[0]->Update(100, 100, 500, 500);
-	terrain->Update();
+	terrain->Update(elapsed_time);
 
 	ImGui::Begin("GeoCreater");
 	LightManager::Instance().DrawDebugGUI();

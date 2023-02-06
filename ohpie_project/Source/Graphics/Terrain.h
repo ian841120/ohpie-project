@@ -9,7 +9,7 @@ public:
 	~Terrain() {};
 	void CreateMesh(int width,int height);
 	void Render(const RenderContext& rc);
-	void Update();
+	void Update(float elapsedTime);
 	void DebugGUI();
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
@@ -27,15 +27,16 @@ private:
 	};
 	struct CBuffer
 	{
+		DirectX::XMFLOAT4X4 world;
 		DirectX::XMFLOAT4X4 viewProjection;
 
 	};
 	UINT indexCount;
 	PerlinNoise perlinNoise;
-	int width = 100, height = 100;
+	int width = 64, height = 64;
 
 	int octaves = 1;
 	float persistence = 1.0f;
-	float h = 1.0f;
+	float h = 3.0f;
 	float nanika = 0.01f;
 };

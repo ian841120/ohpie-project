@@ -5,5 +5,7 @@ struct VS_OUT
 };
 cbuffer CBuffer
 {
+    row_major float4x4 world;
+
     row_major float4x4 view_projection;
 };

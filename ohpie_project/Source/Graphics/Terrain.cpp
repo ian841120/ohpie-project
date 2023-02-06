@@ -25,24 +25,31 @@ Terrain::Terrain()
 	_ASSERT_EXPR(SUCCEEDED(hr), L"FAIL");
 	CreateMesh(width, height);
 }
-void Terrain::Update()
+void Terrain::Update(float elapsedTime)
 {
 	ID3D11DeviceContext* dc = Graphics::GetInstance().GetDeviceContext();
 	std::vector<Vertex> temp;
+	static float t=0;
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
 			Vertex vertex;
 			vertex.position.x = static_cast<float>(j);
-			float e = perlinNoise.OctavePerlin(j/float(width),i/float(height), octaves, persistence);
-			vertex.position.y = static_cast<float>(e)*h;
+
+			float e = perlinNoise.OctavePerlin(j / float(width)+ t, i / float(height)+ t, octaves, persistence);
+			if(e<0.0)
+				vertex.position.y = 0.0f;
+			else
+				vertex.position.y = e;
+
+			
 			vertex.position.z = static_cast<float>(i);
 			temp.emplace_back(vertex);
 		}
 
 	}
-
+	t += elapsedTime*0.03;
 	HRESULT hr{ S_OK };
 	//Edit vertex data 
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
@@ -79,7 +86,7 @@ void Terrain::CreateMesh(int width, int height)
 		{
 			Vertex vertex;
 			vertex.position.x = static_cast<float>(j);
-			double e = perlinNoise.OctavePerlin(j+0.01f, i+0.05f, 4, 5.0f);
+			double e = perlinNoise.OctavePerlin(j / float(width), i / float(height), 6, persistence);
 			vertex.position.y = static_cast<float>(e);
 			vertex.position.z = static_cast<float>(i);
 			vertices.emplace_back(vertex);
@@ -141,7 +148,7 @@ void Terrain::Render(const RenderContext& rc)
 	const float blend_factor[4] = { 1.0f,1.0f,1.0f,1.0f };
 	rc.deviceContext->OMSetBlendState(RenderStates::blendStates[static_cast<int>(RenderStates::BS::ALPHA)].Get(), blend_factor, 0xFFFFFFFF);
 	rc.deviceContext->OMSetDepthStencilState(RenderStates::depthStencilStates[static_cast<int>(RenderStates::DSS::ZT_ON_ZW_ON)].Get(), 0);
-	rc.deviceContext->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_SOLID)].Get());
+	rc.deviceContext->RSSetState(RenderStates::rasterizerStates[static_cast<int>(RenderStates::RS::FILL_WIREFRAME)].Get());
 
 	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&rc.view);
 	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&rc.projection);
@@ -151,6 +158,10 @@ void Terrain::Render(const RenderContext& rc)
 
 	DirectX::XMStoreFloat4x4(&cbuffer.viewProjection, VP);
 	
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(10,h, 10);
+	DirectX::XMMATRIX W = S;
+	DirectX::XMStoreFloat4x4(&cbuffer.world, W);
+
 	rc.deviceContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &cbuffer, 0, 0);
 
 	UINT stride{ sizeof(Vertex) };
@@ -166,7 +177,7 @@ void Terrain::DebugGUI()
 {
 	ImGui::Begin("PerlinNoise");
 	ImGui::SliderInt("octaves", &octaves, 1, 30);
-	ImGui::SliderFloat("persistence", &persistence, 0.01f, 1.0f);
+	ImGui::SliderFloat("persistence", &persistence, 0.01f, 5.0f);
 	ImGui::SliderFloat("Height", &h, 1.0f, 500.0f);
 	ImGui::SliderFloat("NANIKA", &nanika, 0.01f, 1.0f);
 	ImGui::End();

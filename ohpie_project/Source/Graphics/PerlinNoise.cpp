@@ -48,21 +48,21 @@ float PerlinNoise::CreateNoise(float x, float y, float z)
 	x1 = lerp(grad(aaa, xf, yf, zf), grad(baa, xf - 1, yf, zf), u);
 	x2 = lerp(grad(aba, xf, yf-1, zf), grad(bba, xf - 1, yf - 1, zf), u);
 	y1 = lerp(x1, x2, v);
-	x1 = lerp(grad(aab, xf, yf, zf - 1), grad(abb, xf - 1, yf, zf - 1), u);
+	x1 = lerp(grad(aab, xf, yf, zf - 1), grad(bab, xf - 1, yf, zf - 1), u);
 	x2 = lerp(grad(abb, xf, yf - 1, zf - 1), grad(bbb, xf - 1, yf - 1, zf - 1), u);
 	y2 = lerp(x1, x2, v);
 	return (lerp(y1, y2, w) + 1) / 2;
 }
 float PerlinNoise::CreateNoise(float x, float y)
 {
-	float fractX = x - int(x);
-	float fractY = y - int(y);
 
-	int x1 = int(x);
-	int y1 = int(y);
+	int x1 = int(x)&255;
+	int y1 = int(y)&255;
 	int x2 = x1 + 1;
 	int y2 = y1 + 1;
 
+	float fractX = x - int(x);
+	float fractY = y - int(y);
 
 	float u = fade(fractX);
 	float v = fade(fractY);
@@ -75,9 +75,9 @@ float PerlinNoise::CreateNoise(float x, float y)
 	bb = p[(p[x2&255] + y2)&255];
 
 
-	float lerp1 = lerp(grad(aa, x, y), grad(ab, x - 1, y), u);
-	float lerp2 = lerp(grad(ba, x, y - 1), grad(bb, x - 1, y - 1), u);
-	return (lerp(lerp1, lerp2, v)+1.0f)/2.0f;
+	float lerp1 = lerp(grad(aa, fractX, fractY), grad(ba, fractX - 1, fractY), u);
+	float lerp2 = lerp(grad(ab, fractX, fractY - 1), grad(bb, fractX - 1, fractY - 1), u);
+	return (lerp(lerp1, lerp2, v));
 }
 float PerlinNoise::fade(float t)
 {
