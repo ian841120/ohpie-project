@@ -38,7 +38,7 @@ void Terrain::Update(float elapsedTime)
 			vertex.position.x = static_cast<float>(j);
 
 			float e = perlinNoise.OctavePerlin(j / float(width)+ t, i / float(height)+ t, octaves, persistence);
-			if(e<0.0)
+			if(e<0.0f)
 				vertex.position.y = 0.0f;
 			else
 				vertex.position.y = e;

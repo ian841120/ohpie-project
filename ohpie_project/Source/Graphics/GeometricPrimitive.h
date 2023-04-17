@@ -27,8 +27,10 @@ private:
 		DirectX::XMFLOAT4	color;
 		DirectionLightData directionalLightData;
 		PointLightData		pointLightData[PointLightMax];
+		SpotLightData		spotLightData[SpotLightMax];
 		int pointLightCount;
-		DirectX::XMFLOAT3	dummy;
+		int spotLightCount;
+		DirectX::XMFLOAT2 dummy;
 		FogData				fogData;
 	};
 	struct Vertex

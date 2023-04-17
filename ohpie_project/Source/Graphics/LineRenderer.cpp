@@ -137,12 +137,12 @@ void LineRenderer::Render(RenderContext&rc)
 	UINT totalVertexCount = static_cast<UINT>(vertices.size());
 	UINT start = 0;
 	UINT count = (totalVertexCount < MaxVertexCount) ? totalVertexCount : MaxVertexCount;
-	D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
-	HRESULT hr = rc.deviceContext->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
-	_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to Mapping");
 
 	while (start < totalVertexCount)
 	{
+		D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
+		HRESULT hr = rc.deviceContext->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
+		_ASSERT_EXPR(SUCCEEDED(hr), L"Failed to Mapping");
 
 		memcpy(mapped_subresource.pData, &vertices[start], sizeof(Vertex) * count);
 		rc.deviceContext->Unmap(vertex_buffer.Get(),0);

@@ -29,7 +29,17 @@ struct MaskData
 	DirectX::XMFLOAT4 edgeColor;
 
 };
-
+struct SpotLightData
+{
+	DirectX::XMFLOAT4 position;
+	DirectX::XMFLOAT4 direction;
+	DirectX::XMFLOAT4 color;
+	float	range;
+	float	innerCone;
+	float	outerCone;
+	float	padding;
+};
+static constexpr int SpotLightMax = 8;
 struct SkySimulationData
 {
 
@@ -47,7 +57,9 @@ struct RenderContext
 	//Light Data
 	DirectionLightData		directionLightData;
 	PointLightData			pointLightData[PointLightMax];
+	SpotLightData			spotLightData[SpotLightMax];
 	int						pointLightCount = 0;
+	int						spotLightCount = 0;
 	//Fog
 	FogData					fogData;
 	//MaskData

@@ -15,7 +15,9 @@ cbuffer Cbuffer : register(b0)
     float4                  color;
     DirectionalLightData    directionalLightData;
     PointLightData          pointLightData[pointLightMax];
+    SpotLightData           spotLightData[spotLightMax];
     int                     pointLightCount;
-    float3                  dummy;
+    int                     spotLightCount;
+    float2                  dummy;
     FogData                 fogData;
 }

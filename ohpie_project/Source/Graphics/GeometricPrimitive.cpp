@@ -151,6 +151,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
+		memcpy_s(&cbuffer.spotLightData, sizeof(cbuffer.spotLightData), &rc.spotLightData, sizeof(rc.spotLightData));
+		cbuffer.spotLightCount = rc.spotLightCount;
+
 		cbuffer.color = cuboid.color;
 		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
 		rc.deviceContext->DrawIndexed(cuboidIndexCount, 0,0);
@@ -178,6 +181,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
+		memcpy_s(&cbuffer.spotLightData, sizeof(cbuffer.spotLightData), &rc.spotLightData, sizeof(rc.spotLightData));
+		cbuffer.spotLightCount = rc.spotLightCount;
+
 		cbuffer.color = cylinder.color;
 		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
 		rc.deviceContext->DrawIndexed(cylinderIndexCount, 0, 0);
@@ -201,6 +207,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
+		memcpy_s(&cbuffer.spotLightData, sizeof(cbuffer.spotLightData), &rc.spotLightData, sizeof(rc.spotLightData));
+		cbuffer.spotLightCount = rc.spotLightCount;
+
 		cbuffer.color = cone.color;
 		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
 		rc.deviceContext->DrawIndexed(coneIndexCount, 0, 0);
@@ -224,6 +233,12 @@ void GeometricPrimitive::Render(RenderContext& rc)
 		cbuffer.fogData = rc.fogData;
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
+
+		memcpy_s(&cbuffer.spotLightData, sizeof(cbuffer.spotLightData), &rc.spotLightData, sizeof(rc.spotLightData));
+		cbuffer.spotLightCount = rc.spotLightCount;
+
+	
+
 		cbuffer.color = sphere.color;
 		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
 		rc.deviceContext->DrawIndexed(sphereIndexCount, 0, 0);
@@ -274,6 +289,9 @@ void GeometricPrimitive::Render(RenderContext& rc)
 
 		memcpy_s(&cbuffer.pointLightData, sizeof(cbuffer.pointLightData), &rc.pointLightData, sizeof(rc.pointLightData));
 		cbuffer.pointLightCount = rc.pointLightCount;
+		memcpy_s(&cbuffer.spotLightData, sizeof(cbuffer.spotLightData), &rc.spotLightData, sizeof(rc.spotLightData));
+		cbuffer.spotLightCount = rc.spotLightCount;
+
 		cbuffer.color = capsule.color;
 		rc.deviceContext->UpdateSubresource(constant_buffer.Get(), 0, 0, &cbuffer, 0, 0);
 		rc.deviceContext->DrawIndexed(sideCylinderIndexCount, 0, 0);

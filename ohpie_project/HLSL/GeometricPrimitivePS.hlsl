@@ -25,8 +25,25 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     }
 
+    float3 spotDiffuse = (float3)0;
+    for (int i = 0; i < spotLightCount; i++)
+    {
+        float lightVector = pin.world_position.xyz - spotLightData[i].position.xyz;
+        float lightLength = length(lightVector);
+        if (lightLength > spotLightData[i].range)
+            continue;
+        float attenuate = saturate(1.0f - lightLength / spotLightData[i].range);
+        lightVector = normalize(lightVector);
+
+        float3 spotDirection = normalize(spotLightData[i].direction.xyz);
+        float angle = dot(lightVector, spotDirection);
+        float area = spotLightData[i].innerCone - spotLightData[i].outerCone;
+        attenuate *= saturate(1.0f - (spotLightData[i].innerCone - angle) / area);
+        spotDiffuse += CalcLambertDiffuse(N, lightVector, spotLightData[i].color.rgb, kd) * attenuate;
+    }
+
     float4 color = pin.color;
-    color.rgb *= (directionalDiffuse + pointDiffuse);
+    color.rgb = (directionalDiffuse + pointDiffuse + spotDiffuse);
 
     //Fog
     {

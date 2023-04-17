@@ -8,7 +8,10 @@
 
 void SceneGame::Initialize()
 {
-	LightManager::Instance().Register(new Light(Light::LIGHTTYPE::directional));
+	Light* directoinLight = new Light(Light::LIGHTTYPE::directional);
+	directoinLight->SetDirection(DirectX::XMFLOAT3(0.0f, -1.0f, 5000.0f));
+	LightManager::Instance().Register(directoinLight);
+
 
 	sprite[0] = std::make_unique<Sprite>();
 	texture[static_cast<int>(TextureName::cyberpunk)] = std::make_unique<Texture>("./Data/Image/Title.png");
@@ -35,6 +38,8 @@ void SceneGame::Update(float elapsed_time)
 	ImGui::SameLine();
 	if (ImGui::Button("press", { 50, 30 }))
 	{
+
+
 		if (var == 0)
 		{
 			Sphere sphere = { { 1,1,1,1 } ,{ 0,0,0 }, 10,"SPHERE" };
@@ -120,8 +125,9 @@ void SceneGame::Render()
 	rc.projection = camera.GetProjection();
 	
 	LightManager::Instance().PushRenderContext(rc);
+	
+	LightManager::Instance().DrawDebugPrimitive();
 	graphics.GetAtmosphericShader()->Render(rc);
-
 	//
 	for (const auto& sphere : spheres)
 	{
@@ -146,9 +152,10 @@ void SceneGame::Render()
 		shader->End(rc);
 
 	}
-	SceneGame::DrawGrid();
+	//SceneGame::DrawGrid();
 	graphics.GetLineRenderer()->Render(rc);
 	terrain->Render(rc);
+	graphics.GetDebugRenderer()->Render(rc);
 }
 void SceneGame::Finalize()
 {
@@ -224,7 +231,7 @@ void SceneGame::DrawTextureDebugGUI()
 	
 	ImGui::RadioButton(texture[0]->GetTextureName().c_str(), &textureCount, 0);
 	ImGui::RadioButton(texture[1]->GetTextureName().c_str(), &textureCount, 1);
-	if (ImGui::TreeNode("Shadowmap"))
+	if (ImGui::TreeNode("TextureView"))
 	{
 		ImGui::Text("texture");
 		ImGui::Image(texture[textureCount]->GetSRV().Get(), { 256, 256 }, { 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });

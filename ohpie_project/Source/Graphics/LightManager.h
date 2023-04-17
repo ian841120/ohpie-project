@@ -13,6 +13,7 @@ public:
 		static LightManager lightManager;
 		return lightManager;
 	}
+	void Remove(Light* light);
 	// register the light
 	void Register(Light* light);
 	void PushRenderContext(RenderContext& rc);
