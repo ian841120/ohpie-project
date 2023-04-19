@@ -8,6 +8,19 @@ class Sprite
 public:
 	Sprite();
 	~Sprite() {};
+	enum class POVIT
+	{
+		CENTER,
+		UPPER_LEFT,
+		UPPER_RIGHT,
+		LOWER_LEFT,
+		LOWER_RIGHT,
+
+		CENTER_UPPER,
+		CENTER_LOWER,
+		CENTER_RIGHT,
+		CENTER_LEFT,
+	};
 	struct Vertex
 	{
 		DirectX::XMFLOAT3 position;
@@ -22,11 +35,13 @@ private:
 
 	int textureWidth = 0;
 	int textureHeight = 0;
+	POVIT povit = POVIT::CENTER;
 
 public:
 	const Microsoft::WRL::ComPtr<ID3D11Buffer>& GetVertexBuffer()const { return vertex_buffer; }
 	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetShaderResourceView()const { return shader_resource_view; }
-
+	void SetPovit(POVIT p) { povit = p; }
+	DirectX::XMFLOAT2 calcPovit(float dx, float dy, float dw, float dh);
 	void SetShaderResourceView(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& srv, int texWidth, int texHeight);
 	void Update(float dx, float dy, float dw, float dh);
 	void Update(float dx, float dy, float dw, float dh, float r, float g , float b, float a , float angle );

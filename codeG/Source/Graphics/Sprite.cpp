@@ -95,6 +95,8 @@ void Sprite::Update(float dx,float dy,float dw,float dh,float r,float g,float b,
 	//		   |		|
 	//		   |		|
 	//  (x2,y2)*--------*(x3,y3)
+	dx = calcPovit(dx, dy, dw, dh).x;
+	dy = calcPovit(dx, dy, dw, dh).y;
 	DirectX::XMFLOAT2 positions[] =
 	{
 		DirectX::XMFLOAT2(dx,dy),
@@ -171,4 +173,47 @@ void Sprite::SetShaderResourceView(const Microsoft::WRL::ComPtr<ID3D11ShaderReso
 	textureWidth = texWidth;
 	textureHeight = texHeight;
 
+}
+DirectX::XMFLOAT2 Sprite::calcPovit(float dx,float dy,float dw,float dh)
+{
+	switch (povit)
+	{
+	case POVIT::CENTER:
+		dx = dx - dw / 2;
+		dy = dy - dh / 2;
+		break;
+	case POVIT::UPPER_LEFT:
+		dx = dx; 
+		dy = dy;
+		break;
+	case POVIT::UPPER_RIGHT:
+		dx = dx - dw;
+		dy = dy ;
+		break;
+	case POVIT::LOWER_LEFT:
+		dx = dx ;
+		dy = dy - dh;
+		break;
+	case POVIT::LOWER_RIGHT:
+		dx = dx - dw;
+		dy = dy - dh;
+		break;
+	case POVIT::CENTER_LEFT:
+		dx = dx;
+		dy = dy - dh / 2;
+		break;
+	case POVIT::CENTER_RIGHT:
+		dx = dx - dw;
+		dy = dy - dh / 2;;
+		break;
+	case POVIT::CENTER_UPPER:
+		dx = dx - dw / 2;
+		dy = dy;
+		break;
+	case POVIT::CENTER_LOWER:
+		dx = dx - dw/2;
+		dy = dy - dh;
+		break;
+	}
+	return DirectX::XMFLOAT2(dx, dy);
 }

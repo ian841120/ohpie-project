@@ -11,10 +11,9 @@ void SceneGame::Initialize()
 void SceneGame::Update(float elapsed_time)
 {
 
-	player->Update();
-	ImGui::Begin("GeoCreater");
-	
-	ImGui::End();
+	player->Update(elapsed_time);
+	player->DebugGUI();
+
 }
 void SceneGame::Render()
 {
@@ -33,10 +32,7 @@ void SceneGame::Render()
 	RenderContext rc;
 	rc.deviceContext = dc;
 	//Render
-	SpriteShader* shader = graphics.GetShader(player->GetshaderType());
-	shader->Begin(rc);
-	shader->Render(rc, player->GetSprite());
-	shader->End(rc);
+	player->Render(rc);
 }
 void SceneGame::Finalize()
 {
